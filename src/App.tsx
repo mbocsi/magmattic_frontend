@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import useWebSocket, { ReadyState, SendMessage } from "react-use-websocket";
+import { useState, useCallback } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 import "./App.css";
 import { FifoBuffer } from "./lib/buffer";
 
@@ -11,7 +11,9 @@ const VOLTAGE_LENGTH = 32;
 
 function App() {
 	const [url, setUrl] = useState<string | null>(null);
-	const [voltageData, setVoltageData] = useState<number[]>([]);
+	const [voltageData, setVoltageData] = useState<FifoBuffer>(
+		new FifoBuffer(VOLTAGE_LENGTH, [])
+	);
 	const [fftData, setFftData] = useState<number[][]>([]);
 	const { sendMessage, readyState } = useWebSocket<DataMessage>(url, {
 		onMessage: handleMessage,
@@ -22,13 +24,7 @@ function App() {
 		const data = JSON.parse(msg.data);
 		switch (data.type) {
 			case "voltage":
-				setVoltageData((prev) => {
-					const newArray = [...prev, data.val];
-					if (newArray.length > VOLTAGE_LENGTH) {
-						newArray.shift();
-					}
-					return newArray;
-				});
+				setVoltageData((prev) => prev.push(data.val));
 				break;
 			case "fft":
 				setFftData(data.val);
@@ -78,7 +74,7 @@ function App() {
 			<button onClick={handleSendControl}>Send Messsage</button>
 			<div style={{ display: "flex", flexDirection: "row" }}>
 				<div>
-					{voltageData.map((v, i) => (
+					{voltageData.getElements().map((v, i) => (
 						<div key={i}>{v}</div>
 					))}
 				</div>
