@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect, useCallback } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [url, setUrl] = useState<string | null>(null);
+	const { sendMessage, lastMessage, readyState } = useWebSocket(url);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+	useEffect(() => {
+		if (lastMessage !== null) {
+			console.log(lastMessage);
+		}
+	}, [lastMessage]);
+
+	const handleConnect = useCallback(() => {
+		console.log("Connecting to server");
+		setUrl("ws://localhost:44444");
+	}, []);
+
+	const handleDisconnect = useCallback(() => {
+		console.log("Disconnecting from server");
+		setUrl(null);
+	}, []);
+
+	const handleChangeUrl = useCallback(() => {
+		console.log("Clicked on change URL");
+		setUrl("10.140.85.161:44444");
+	}, []);
+
+	const handleSendControl = useCallback(() => {
+		console.log("Clicked on send control");
+		sendMessage("Hello Magmattic!");
+	}, []);
+
+	const connectionStatus = {
+		[ReadyState.CONNECTING]: "Connecting",
+		[ReadyState.OPEN]: "Open",
+		[ReadyState.CLOSING]: "Closing",
+		[ReadyState.CLOSED]: "Closed",
+		[ReadyState.UNINSTANTIATED]: "Uninstantiated",
+	}[readyState];
+
+	return (
+		<div>
+			<h1>Magmattic Client</h1>
+			<p>Status: {connectionStatus}</p>
+			<button onClick={handleConnect}>Connect</button>
+			<button onClick={handleDisconnect}>Disconnect</button>
+			<button onClick={handleChangeUrl}>Change URL</button>
+			<button onClick={handleSendControl}>Send Messsage</button>
+		</div>
+	);
 }
 
-export default App
+export default App;
