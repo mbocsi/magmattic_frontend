@@ -1,16 +1,42 @@
 import { useState, useEffect, useCallback } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import useWebSocket, { ReadyState, SendMessage } from "react-use-websocket";
 import "./App.css";
+import { FifoBuffer } from "./lib/buffer";
+
+type VoltageData = { type: "voltage"; val: number };
+type FFTData = { type: "fft"; val: number[][] };
+type DataMessage = VoltageData | FFTData;
+
+const VOLTAGE_LENGTH = 32;
 
 function App() {
 	const [url, setUrl] = useState<string | null>(null);
-	const { sendMessage, lastMessage, readyState } = useWebSocket(url);
+	const [voltageData, setVoltageData] = useState<number[]>([]);
+	const [fftData, setFftData] = useState<number[][]>([]);
+	const { sendMessage, readyState } = useWebSocket<DataMessage>(url, {
+		onMessage: handleMessage,
+	});
 
-	useEffect(() => {
-		if (lastMessage !== null) {
-			console.log(lastMessage);
+	function handleMessage(msg: MessageEvent) {
+		if (!msg) return;
+		const data = JSON.parse(msg.data);
+		switch (data.type) {
+			case "voltage":
+				setVoltageData((prev) => {
+					const newArray = [...prev, data.val];
+					if (newArray.length > VOLTAGE_LENGTH) {
+						newArray.shift();
+					}
+					return newArray;
+				});
+				break;
+			case "fft":
+				setFftData(data.val);
+				break;
+			default:
+				console.log(`Unknown type detected ${data.type}`);
 		}
-	}, [lastMessage]);
+	}
 
 	const handleConnect = useCallback(() => {
 		console.log("Connecting to server");
@@ -43,11 +69,25 @@ function App() {
 	return (
 		<div>
 			<h1>Magmattic Client</h1>
-			<p>Status: {connectionStatus}</p>
+			<p>
+				{url} Status: {connectionStatus}
+			</p>
 			<button onClick={handleConnect}>Connect</button>
 			<button onClick={handleDisconnect}>Disconnect</button>
 			<button onClick={handleChangeUrl}>Change URL</button>
 			<button onClick={handleSendControl}>Send Messsage</button>
+			<div style={{ display: "flex", flexDirection: "row" }}>
+				<div>
+					{voltageData.map((v, i) => (
+						<div key={i}>{v}</div>
+					))}
+				</div>
+				<div>
+					{fftData.map((v, i) => (
+						<div key={i}>{v}</div>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 }
