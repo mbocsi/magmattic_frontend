@@ -13,11 +13,11 @@ import {
 import "./App.css";
 import { FifoBuffer } from "./lib/buffer";
 
-type VoltageData = { type: "voltage"; val: number };
+type VoltageData = { type: "voltage"; val: number[] };
 type FFTData = { type: "fft"; val: number[][] };
 type DataMessage = VoltageData | FFTData;
 
-const VOLTAGE_LENGTH = 500;
+const VOLTAGE_LENGTH = 1000;
 
 ChartJS.register(
 	CategoryScale,
@@ -28,48 +28,107 @@ ChartJS.register(
 	Title
 );
 
-const options = {
-	// scales: {
-	// 	y: {
-	// 		min: -1,
-	// 		max: 1,
-	// 	},
-	// },
-	animation: {
-		duration: 0, // Set animation duration to 0
-	},
-	// or for specific animations
-	animations: {
-		y: {
-			duration: 0,
-		},
-	},
-};
-
 function App() {
 	const [url, setUrl] = useState<string | null>(null);
 	const [voltageData, setVoltageData] = useState<FifoBuffer>(
 		new FifoBuffer(VOLTAGE_LENGTH, [])
 	);
 	const [fftData, setFftData] = useState<number[][]>([]);
-	const { readyState } = useWebSocket<DataMessage>(url, {
-		onMessage: handleMessage,
+	const { readyState, lastJsonMessage } = useWebSocket<DataMessage>(url, {
+		// onMessage: handleMessage,
 	});
+	const [labels, setLabels] = useState<number[]>([0]);
 
-	function handleMessage(msg: MessageEvent) {
-		if (!msg) return;
-		const data = JSON.parse(msg.data);
-		switch (data.type) {
-			case "voltage":
-				setVoltageData((prev) => prev.push(data.val));
-				break;
-			case "fft":
-				setFftData(data.val);
-				break;
-			default:
-				console.log(`Unknown type detected ${data.type}`);
-		}
-	}
+	const vData = {
+		datasets: [
+			{
+				label: "Voltage",
+				pointRadius: 0,
+				showLine: true,
+				data: [] as any,
+				backgroundColor: "rgba(255, 99, 132, 1)",
+			},
+		],
+	};
+	const vOptions = {
+		xAxes: [
+			{
+				type: "realtime",
+				realtime: {
+					onRefresh: function () {
+						if (
+							!lastJsonMessage ||
+							lastJsonMessage.type !== "voltage"
+						)
+							return;
+						vData.datasets[0].data.push(
+							lastJsonMessage.val.map((v, i) => ({
+								x: labels[labels.length - 1] + i,
+								y: v,
+							}))
+						);
+						const newLabels = [...labels];
+						for (let i = 0; i < lastJsonMessage.val.length; i++) {
+							newLabels.push(labels[labels.length - 1] + i + 1);
+						}
+						while (newLabels.length > 1000) {
+							newLabels.shift();
+						}
+						setLabels(newLabels);
+					},
+					delay: 300,
+					refresh: 10,
+				},
+			},
+		],
+		yAxes: [
+			{
+				scaleLabel: {
+					display: true,
+					fontFamily: "Arial",
+					labelString: "Moment",
+					fontSize: 20,
+					fontColor: "#6c757d",
+				},
+				ticks: {
+					max: 100,
+					min: 0,
+				},
+			},
+		],
+		animation: {
+			duration: 10, // Set animation duration to 0
+			easing: "linear",
+		},
+		elements: {
+			point: {
+				radius: 0,
+			},
+		},
+	};
+
+	// function handleMessage(msg: MessageEvent) {
+	// 	if (!msg) return;
+	// 	const data = JSON.parse(msg.data);
+	// 	switch (data.type) {
+	// 		case "voltage":
+	// 			setVoltageData((prev) => prev.push(data.val));
+	// 			const newLabels = [...labels];
+	// 			for (let i = 0; i < data.val.length; i++) {
+	// 				newLabels.push(labels[labels.length - 1] + 1);
+	// 			}
+	// 			while (newLabels.length > 1000) {
+	// 				newLabels.shift();
+	// 			}
+	// 			setLabels(newLabels);
+	// 			break;
+	// 		case "fft":
+	// 			setFftData(data.val);
+	// 			break;
+	// 		default:
+	// 			console.log(`Unknown type detected ${data.type}`);
+	// 	}
+	// }
 
 	const handleConnect = useCallback(() => {
 		console.log("Connecting to server");
@@ -109,22 +168,11 @@ function App() {
 			<button onClick={handleDisconnect}>Disconnect</button>
 			<div style={{ display: "flex", flexDirection: "row" }}>
 				<Line
-					options={options}
-					data={{
-						labels: Array.from(
-							{ length: VOLTAGE_LENGTH },
-							(_, i) => i + 1
-						),
-						datasets: [
-							{
-								data: voltageData.getElements(),
-								backgroundColor: "rgba(255, 99, 132, 1)",
-							},
-						],
-					}}
+					options={vOptions}
+					data={vData}
 					style={{ backgroundColor: "#FFFFFF" }}
 				/>
-				<Line
+				{/* <Line
 					options={options}
 					data={{
 						labels: Array.from(
@@ -142,7 +190,7 @@ function App() {
 						],
 					}}
 					style={{ backgroundColor: "#FFFFFF" }}
-				/>
+				/> */}
 			</div>
 		</div>
 	);

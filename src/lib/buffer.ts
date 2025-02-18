@@ -6,11 +6,11 @@ export class FifoBuffer {
 		this.elements = elements;
 	}
 
-	public push(val: number) {
-		const newElements = [...this.elements, val];
+	public push(val: number[]) {
+		const newElements = [...this.elements, ...val];
 
 		// Ensure the buffer size limit is maintained
-		if (newElements.length > this.size) {
+		while (newElements.length > this.size) {
 			newElements.shift();
 		}
 
