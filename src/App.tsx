@@ -7,10 +7,8 @@ import { ECharts } from "echarts/core";
 const VOLTAGE_DATA_SIZE = 1000;
 
 const App = () => {
-	// const [ws, setWs] = useState<WebSocket>(
-	// 	new WebSocket("ws://localhost:44444")
-	// );
-	const [counter, setCounter] = useState<number>(1000);
+	const [ws, setWs] = useState<WebSocket | null>(null);
+	// const [counter, setCounter] = useState<number>(1000);
 	const [voltageData, setVoltageData] = useState<VoltageData>(
 		Array.from({ length: VOLTAGE_DATA_SIZE }, (_, i) => ({
 			name: i,
@@ -20,21 +18,20 @@ const App = () => {
 	const [voltageChart, setVoltageChart] = useState<ECharts | null>(null);
 
 	const voltageChartRef = useRef<ECharts | null>(null);
-	const counterRef = useRef<number>(0);
+	const counterRef = useRef<number>(1000);
 
 	useEffect(() => {
 		voltageChartRef.current = voltageChart;
-		counterRef.current = counter;
-	}, [voltageChart, counter]);
+	}, [voltageChart]);
 
 	useEffect(() => {
-		const ws = new WebSocket("ws://localhost:44444");
+		const socket = new WebSocket("ws://localhost:44444");
 
-		ws.addEventListener("open", () => {
+		socket.addEventListener("open", () => {
 			console.log("Connected to server!");
 		});
 
-		ws.addEventListener("message", (event) => {
+		socket.addEventListener("message", (event) => {
 			const data = JSON.parse(event.data);
 			switch (data.type) {
 				case "voltage":
@@ -63,8 +60,10 @@ const App = () => {
 			}
 		});
 
+		setWs(socket);
+
 		return () => {
-			ws.close();
+			if (ws) ws.close();
 		};
 	}, []);
 
