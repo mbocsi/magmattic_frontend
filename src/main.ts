@@ -127,7 +127,7 @@ fftOption && fftChart.setOption(fftOption);
 
 // // =========== WS Stuff ===============
 
-const socket = new WebSocket("ws://localhost:44444");
+const socket = new WebSocket("ws://10.141.199.55:44444");
 
 // Connection opened
 socket.addEventListener("open", (event) => {
