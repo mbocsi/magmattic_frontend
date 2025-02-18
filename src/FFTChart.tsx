@@ -20,19 +20,15 @@ echarts.use([
 	UniversalTransition,
 ]);
 
-const VoltageChart = ({
-	setChart,
-}: {
-	setChart: (x: echarts.ECharts) => void;
-}) => {
+const FFTChart = ({ setChart }: { setChart: (x: echarts.ECharts) => void }) => {
 	useEffect(() => {
-		var voltageChartDom = document.getElementById("voltage-chart");
-		var voltageChart = echarts.init(voltageChartDom);
-		console.log(voltageChart);
-		setChart(voltageChart);
-		var voltageOption = {
+		var chartDom = document.getElementById("fft-chart");
+		var chart = echarts.init(chartDom);
+		console.log(chart);
+		setChart(chart);
+		var option = {
 			title: {
-				text: "Voltage vs Time",
+				text: "FFT",
 			},
 			tooltip: {
 				trigger: "axis",
@@ -45,7 +41,7 @@ const VoltageChart = ({
 				},
 			},
 			xAxis: {
-				type: "time",
+				type: "value",
 				splitLine: {
 					show: false,
 				},
@@ -59,7 +55,7 @@ const VoltageChart = ({
 			},
 			series: [
 				{
-					name: "Voltage",
+					name: "FFT",
 					data: [],
 					showSymbol: false,
 					type: "line",
@@ -70,12 +66,10 @@ const VoltageChart = ({
 			animationEasingUpdate: (t: number) => t,
 		};
 
-		voltageOption && voltageChart.setOption(voltageOption);
+		option && chart.setOption(option);
 	}, []);
 
-	return (
-		<div id="voltage-chart" style={{ width: "1600px", height: "400px" }} />
-	);
+	return <div id="fft-chart" style={{ width: "1600px", height: "400px" }} />;
 };
 
-export default VoltageChart;
+export default FFTChart;

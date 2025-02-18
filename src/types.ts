@@ -1,2 +1,2 @@
-export type VoltageDataPoint = { name: number; value: [number, number] };
-export type VoltageData = VoltageDataPoint[];
+export type DataPoint = { name: number; value: [number, number] };
+export type Data = DataPoint[];
