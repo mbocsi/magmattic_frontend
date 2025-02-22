@@ -20,7 +20,15 @@ echarts.use([
 	UniversalTransition,
 ]);
 
-const FFTChart = ({ setChart }: { setChart: (x: echarts.ECharts) => void }) => {
+const FFTChart = ({
+	setChart,
+	width,
+	height,
+}: {
+	setChart: (x: echarts.ECharts) => void;
+	width: string;
+	height: string;
+}) => {
 	useEffect(() => {
 		var chartDom = document.getElementById("fft-chart");
 		var chart = echarts.init(chartDom);
@@ -69,7 +77,7 @@ const FFTChart = ({ setChart }: { setChart: (x: echarts.ECharts) => void }) => {
 		option && chart.setOption(option);
 	}, []);
 
-	return <div id="fft-chart" style={{ width: "1600px", height: "400px" }} />;
+	return <div id="fft-chart" style={{ width: width, height: height }} />;
 };
 
 export default FFTChart;

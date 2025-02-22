@@ -54,6 +54,57 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+input {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  transition: border-color 0.25s;
+}
+
+input:hover {
+  border-color: #646cff;
+}
+
+.btn-primary {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a; /* Same dark background */
+  color: #c9d1d9; /* Soft, off-white text */
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s;
+}
+
+.btn-primary:hover {
+  border-color: #4caf50;
+  background-color: #222; /* Slightly lighter on hover */
+}
+
+.btn-secondary {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a; /* Same dark background */
+  color: #c9d1d9; /* Soft, off-white text */
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s;
+}
+
+.btn-secondary:hover {
+  border-color: #d32f2f;
+  background-color: #222; /* Slightly lighter on hover */
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

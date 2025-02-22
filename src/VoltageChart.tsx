@@ -22,8 +22,12 @@ echarts.use([
 
 const VoltageChart = ({
 	setChart,
+	width,
+	height,
 }: {
 	setChart: (x: echarts.ECharts) => void;
+	width: string;
+	height: string;
 }) => {
 	useEffect(() => {
 		var voltageChartDom = document.getElementById("voltage-chart");
@@ -73,9 +77,7 @@ const VoltageChart = ({
 		voltageOption && voltageChart.setOption(voltageOption);
 	}, []);
 
-	return (
-		<div id="voltage-chart" style={{ width: "1600px", height: "400px" }} />
-	);
+	return <div id="voltage-chart" style={{ width: width, height: height }} />;
 };
 
 export default VoltageChart;

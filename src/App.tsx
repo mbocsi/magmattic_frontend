@@ -8,7 +8,13 @@ import FFTChart from "./FFTChart";
 const VOLTAGE_DATA_SIZE = 1000;
 
 const App = () => {
-	const [ws, setWs] = useState<WebSocket | null>(null);
+	// const [ws, setWs] = useState<WebSocket | null>(null);
+	const ws = useRef<WebSocket | null>(null);
+	const [isConnected, setIsConnected] = useState<boolean>(false);
+	const [address, setAddress] = useState<string | null>(
+		"ws://localhost:44444"
+	);
+
 	// const [counter, setCounter] = useState<number>(1000);
 	const [voltageData, setVoltageData] = useState<Data>(
 		Array.from({ length: VOLTAGE_DATA_SIZE }, (_, i) => ({
@@ -34,14 +40,37 @@ const App = () => {
 		fftChartRef.current = fftChart;
 	}, [voltageChart]);
 
+	// const isFirstRun = useRef(true); // Track first render for development
 	useEffect(() => {
-		const socket = new WebSocket("ws://localhost:44444");
+		// if (isFirstRun.current) { // Only needed in scrict-mode
+		// 	isFirstRun.current = false;
+		// 	return;
+		// }
 
-		socket.addEventListener("open", () => {
-			console.log("Connected to server!");
-		});
+		if (ws.current) {
+			ws.current.close(); // Close existing connection before creating a new one
+		}
+		if (!address) return;
 
-		socket.addEventListener("message", (event) => {
+		const socket = new WebSocket(address);
+		ws.current = socket;
+
+		socket.onopen = () => {
+			console.log("Connected to server:", address);
+			setIsConnected(true);
+		};
+
+		socket.onclose = () => {
+			console.log("Disconnected from server:", address);
+			setIsConnected(false);
+		};
+
+		socket.onerror = (e) => {
+			console.error("WebSocket error:", e);
+			setIsConnected(false);
+		};
+
+		socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
 			switch (data.type) {
 				case "voltage":
@@ -71,14 +100,12 @@ const App = () => {
 				default:
 					console.log(`Unknown type detected: ${data.type}`);
 			}
-		});
-
-		setWs(socket);
+		};
 
 		return () => {
-			if (ws) ws.close();
+			socket.close();
 		};
-	}, []);
+	}, [address]);
 
 	useEffect(() => {
 		voltageChartRef?.current?.setOption({
@@ -92,11 +119,106 @@ const App = () => {
 		});
 	}, [fftData]);
 
+	function handleConnect(e: any) {
+		e.preventDefault();
+		const formData = new FormData(e.target);
+		const address = formData.get("address");
+		if (typeof address === "string") setAddress(address);
+	}
+
+	// return (
+	// 	<div id="main" style={{ maxHeight: "100vh" }}>
+	// 		<h1>Magmattic Client</h1>
+	// 		<div id="connect-form">
+	// 			<form onSubmit={handleConnect}>
+	// 				<input
+	// 					type="text"
+	// 					name="address"
+	// 					placeholder="ws://localhost:44444"
+	// 				></input>
+	// 				<button type="submit" className="btn-primary">
+	// 					Connect
+	// 				</button>
+	// 			</form>
+	// 			<button
+	// 				className="btn-secondary"
+	// 				onClick={() => setAddress(null)}
+	// 			>
+	// 				Disconnect
+	// 			</button>
+	// 		</div>
+	// 		<div>
+	// 			<VoltageChart
+	// 				width={`800px`}
+	// 				height={`320px`}
+	// 				setChart={setVoltageChart}
+	// 			/>
+	// 			<FFTChart
+	// 				width={`800px`}
+	// 				height={`320px`}
+	// 				setChart={setFftChart}
+	// 			/>
+	// 		</div>
+	// 	</div>
+	// );
+
 	return (
-		<div>
-			<h1>Magmattic Client</h1>
-			<VoltageChart setChart={setVoltageChart} />
-			<FFTChart setChart={setFftChart} />
+		<div id="control-center">
+			<header>
+				<h1>Magmattic (dev) Client </h1>
+			</header>
+			<div className="layout">
+				<aside id="sidebar">
+					<form onSubmit={handleConnect} id="connect-form">
+						<input
+							type="text"
+							className={
+								isConnected
+									? "input-connected"
+									: "input-disconnected"
+							}
+							name="address"
+							placeholder="ws://0.0.0.0:44444"
+							defaultValue="ws://localhost:44444"
+						/>
+						<button type="submit" className="btn-primary">
+							Connect
+						</button>
+						<button
+							type="button"
+							className="btn-secondary"
+							onClick={() => setAddress(null)}
+						>
+							Disconnect
+						</button>
+					</form>
+					<div id="controls">
+						<h2>Controls (nop)</h2>
+						<label>Spin Speed</label>
+						<input type="range" min="0" max="100" step="1" />
+						<label>Sample Rate</label>
+						<input type="number" min="1" max="10000" />
+					</div>
+				</aside>
+				<main id="data-display">
+					<div className="chart">
+						<VoltageChart
+							width="100%"
+							height="320px"
+							setChart={setVoltageChart}
+						/>
+					</div>
+					<div className="chart">
+						<FFTChart
+							width="100%"
+							height="320px"
+							setChart={setFftChart}
+						/>
+					</div>
+					<div className="chart"></div>
+					<div className="chart"></div>
+				</main>
+			</div>
 		</div>
 	);
 };
