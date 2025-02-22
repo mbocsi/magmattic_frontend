@@ -22,9 +22,19 @@ const FFTData = ({
 			[-Infinity, -Infinity]
 		);
 
+	const rms = Math.sqrt(
+		fftData
+			.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
+			.reduce(
+				(curSum, curVal) => curSum + Math.pow(curVal.value[1], 2),
+				0
+			) /
+			(maxFreq - minFreq)
+	);
+
 	return (
 		<div>
-			<h2>Peak FFT Value</h2>
+			<h2>Peak/RMS FFT Value</h2>
 			<div className="freq-select">
 				<h3>Frequency Range (hz):</h3>
 				<input
@@ -43,9 +53,10 @@ const FFTData = ({
 					onChange={(e) => setMaxFreq(parseFloat(e.target.value))}
 				></input>
 			</div>
-			<h1>
+			<h2>
 				{maxMagnitude[0].toFixed(3)} Hz : {maxMagnitude[1].toFixed(3)} V
-			</h1>
+			</h2>
+			<h2>RMS: {rms.toFixed(5)} V</h2>
 		</div>
 	);
 };
