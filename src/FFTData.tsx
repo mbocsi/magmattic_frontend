@@ -1,0 +1,45 @@
+import { Data } from "./types";
+import "./FFTData.css";
+import { useState } from "react";
+
+const FFTData = ({ fftData }: { fftData: Data }) => {
+	const [minFreq, setMinFreq] = useState<number>(0);
+	const [maxFreq, setMaxFreq] = useState<number>(500);
+
+	const maxMagnitude = fftData
+		.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
+		.reduce(
+			(curMax, curVal) =>
+				curMax[1] < curVal.value[1] ? curVal.value : curMax,
+			[-Infinity, -Infinity]
+		);
+
+	return (
+		<div>
+			<h2>Peak FFT Value</h2>
+			<div className="freq-select">
+				<h3>Frequency Range (hz):</h3>
+				<input
+					id="min-freq"
+					className="freq-input"
+					type="number"
+					defaultValue={0}
+					onChange={(e) => setMinFreq(parseFloat(e.target.value))}
+				></input>
+				-
+				<input
+					id="max-freq"
+					className="freq-input"
+					type="number"
+					defaultValue={500}
+					onChange={(e) => setMaxFreq(parseFloat(e.target.value))}
+				></input>
+			</div>
+			<h1>
+				{maxMagnitude[0].toFixed(3)} Hz : {maxMagnitude[1].toFixed(3)} V
+			</h1>
+		</div>
+	);
+};
+
+export default FFTData;

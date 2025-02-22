@@ -4,6 +4,7 @@ import VoltageChart from "./VoltageChart";
 import { Data } from "./types";
 import { ECharts } from "echarts/core";
 import FFTChart from "./FFTChart";
+import FFTData from "./FFTData";
 
 const VOLTAGE_DATA_SIZE = 1000;
 
@@ -216,7 +217,9 @@ const App = () => {
 						/>
 					</div>
 					<div className="chart"></div>
-					<div className="chart"></div>
+					<div className="chart">
+						<FFTData fftData={fftData} />
+					</div>
 				</main>
 			</div>
 		</div>

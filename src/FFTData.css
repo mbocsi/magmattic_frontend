@@ -1,0 +1,17 @@
+.freq-input {
+    max-width: 3rem;
+    text-align: center;
+    border: 1px solid #333;
+}
+
+.freq-select {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding-left: 20px;
+}
