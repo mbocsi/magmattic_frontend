@@ -1,11 +1,19 @@
 import { Data } from "./types";
 import "./FFTData.css";
-import { useState } from "react";
 
-const FFTData = ({ fftData }: { fftData: Data }) => {
-	const [minFreq, setMinFreq] = useState<number>(0);
-	const [maxFreq, setMaxFreq] = useState<number>(500);
-
+const FFTData = ({
+	fftData,
+	minFreq,
+	setMinFreq,
+	maxFreq,
+	setMaxFreq,
+}: {
+	fftData: Data;
+	minFreq: number;
+	setMinFreq: (x: number) => void;
+	maxFreq: number;
+	setMaxFreq: (x: number) => void;
+}) => {
 	const maxMagnitude = fftData
 		.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
 		.reduce(

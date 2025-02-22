@@ -32,6 +32,9 @@ const App = () => {
 	const [voltageChart, setVoltageChart] = useState<ECharts | null>(null);
 	const [fftChart, setFftChart] = useState<ECharts | null>(null);
 
+	const [minFreq, setMinFreq] = useState<number>(0);
+	const [maxFreq, setMaxFreq] = useState<number>(500);
+
 	const voltageChartRef = useRef<ECharts | null>(null);
 	const fftChartRef = useRef<ECharts | null>(null);
 	const counterRef = useRef<number>(1000);
@@ -211,14 +214,23 @@ const App = () => {
 					</div>
 					<div className="chart">
 						<FFTChart
+							chart={fftChart}
 							width="100%"
 							height="320px"
 							setChart={setFftChart}
+							minFreq={minFreq}
+							maxFreq={maxFreq}
 						/>
 					</div>
 					<div className="chart"></div>
 					<div className="chart">
-						<FFTData fftData={fftData} />
+						<FFTData
+							fftData={fftData}
+							minFreq={minFreq}
+							setMinFreq={setMinFreq}
+							maxFreq={maxFreq}
+							setMaxFreq={setMaxFreq}
+						/>
 					</div>
 				</main>
 			</div>

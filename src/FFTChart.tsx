@@ -21,13 +21,19 @@ echarts.use([
 ]);
 
 const FFTChart = ({
+	chart,
 	setChart,
 	width,
 	height,
+	minFreq,
+	maxFreq,
 }: {
+	chart: echarts.ECharts | null;
 	setChart: (x: echarts.ECharts) => void;
 	width: string;
 	height: string;
+	minFreq: number;
+	maxFreq: number;
 }) => {
 	useEffect(() => {
 		var chartDom = document.getElementById("fft-chart");
@@ -76,6 +82,15 @@ const FFTChart = ({
 
 		option && chart.setOption(option);
 	}, []);
+
+	useEffect(() => {
+		chart?.setOption({
+			xAxis: {
+				min: minFreq,
+				max: maxFreq,
+			},
+		});
+	}, [minFreq, maxFreq]);
 
 	return <div id="fft-chart" style={{ width: width, height: height }} />;
 };
