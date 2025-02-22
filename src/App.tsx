@@ -9,14 +9,12 @@ import FFTData from "./FFTData";
 const VOLTAGE_DATA_SIZE = 1000;
 
 const App = () => {
-	// const [ws, setWs] = useState<WebSocket | null>(null);
 	const ws = useRef<WebSocket | null>(null);
 	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [address, setAddress] = useState<string | null>(
 		"ws://localhost:44444"
 	);
 
-	// const [counter, setCounter] = useState<number>(1000);
 	const [voltageData, setVoltageData] = useState<Data>(
 		Array.from({ length: VOLTAGE_DATA_SIZE }, (_, i) => ({
 			name: i,
@@ -44,13 +42,7 @@ const App = () => {
 		fftChartRef.current = fftChart;
 	}, [voltageChart]);
 
-	// const isFirstRun = useRef(true); // Track first render for development
 	useEffect(() => {
-		// if (isFirstRun.current) { // Only needed in scrict-mode
-		// 	isFirstRun.current = false;
-		// 	return;
-		// }
-
 		if (ws.current) {
 			ws.current.close(); // Close existing connection before creating a new one
 		}
@@ -129,42 +121,6 @@ const App = () => {
 		const address = formData.get("address");
 		if (typeof address === "string") setAddress(address);
 	}
-
-	// return (
-	// 	<div id="main" style={{ maxHeight: "100vh" }}>
-	// 		<h1>Magmattic Client</h1>
-	// 		<div id="connect-form">
-	// 			<form onSubmit={handleConnect}>
-	// 				<input
-	// 					type="text"
-	// 					name="address"
-	// 					placeholder="ws://localhost:44444"
-	// 				></input>
-	// 				<button type="submit" className="btn-primary">
-	// 					Connect
-	// 				</button>
-	// 			</form>
-	// 			<button
-	// 				className="btn-secondary"
-	// 				onClick={() => setAddress(null)}
-	// 			>
-	// 				Disconnect
-	// 			</button>
-	// 		</div>
-	// 		<div>
-	// 			<VoltageChart
-	// 				width={`800px`}
-	// 				height={`320px`}
-	// 				setChart={setVoltageChart}
-	// 			/>
-	// 			<FFTChart
-	// 				width={`800px`}
-	// 				height={`320px`}
-	// 				setChart={setFftChart}
-	// 			/>
-	// 		</div>
-	// 	</div>
-	// );
 
 	return (
 		<div id="control-center">

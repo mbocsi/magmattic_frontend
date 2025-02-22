@@ -56,7 +56,6 @@ const VoltageChart = ({
 			},
 			yAxis: {
 				type: "value",
-				// boundaryGap: [0, "100%"],
 				splitLine: {
 					show: true,
 				},
