@@ -125,3 +125,7 @@ header {
 .input-disconnected {
   border: 1px solid #8b3a3a; /* Red border */
 }
+
+.vertical-slider {
+  transform: rotate(180deg);
+}

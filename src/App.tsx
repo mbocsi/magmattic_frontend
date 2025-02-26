@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
 import VoltageChart from "./VoltageChart";
 import { Data } from "./types";
 import { ECharts } from "echarts/core";
 import FFTChart from "./FFTChart";
 import FFTData from "./FFTData";
 import VoltageData from "./VoltageData";
+import "./App.css";
 
 const VOLTAGE_DATA_SIZE = 1000;
 
@@ -80,9 +80,9 @@ const App = () => {
 								value: [counterRef.current + i, val],
 							});
 						});
+						counterRef.current += data.val.length;
 						return newData;
 					});
-					counterRef.current += data.val.length;
 					break;
 
 				case "fft":
@@ -213,6 +213,7 @@ const App = () => {
 						/>
 					</div>
 					<div className="chart">
+						<input type="range" className="vertical-slider" />
 						<FFTChart
 							chart={fftChart}
 							width="100%"
