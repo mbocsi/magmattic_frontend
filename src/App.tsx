@@ -136,6 +136,7 @@ const App = () => {
 	}
 
 	function handleControl(data: {}) {
+		console.log("Sending control data", data);
 		ws.current?.send(JSON.stringify(data));
 	}
 
@@ -185,7 +186,7 @@ const App = () => {
 								handleControl({
 									type: "adc",
 									value: {
-										M: e.target.value,
+										M: parseInt(e.target.value),
 									},
 								})
 							}
@@ -198,7 +199,18 @@ const App = () => {
 							onBlur={(e) =>
 								handleControl({
 									type: "adc",
-									value: { N: e.target.value },
+									value: { N: parseInt(e.target.value) },
+								})
+							}
+						/>
+						<label htmlFor="rolling-fft">Rolling FFT</label>
+						<input
+							id="rolling-fft"
+							type="checkbox"
+							onChange={(e) =>
+								handleControl({
+									type: "adc",
+									value: { rolling_fft: e.target.checked },
 								})
 							}
 						/>
@@ -213,15 +225,30 @@ const App = () => {
 						/>
 					</div>
 					<div className="chart">
-						<input type="range" className="vertical-slider" />
-						<FFTChart
-							chart={fftChart}
-							width="100%"
-							height="320px"
-							setChart={setFftChart}
-							minFreq={minFreq}
-							maxFreq={maxFreq}
-						/>
+						<div className="chart-controls">
+							<input
+								type="range"
+								min={-6}
+								max={2}
+								step={0.5}
+								onChange={(e) =>
+									fftChart?.setOption({
+										yAxis: {
+											min: 0,
+											max: 10 ** parseInt(e.target.value),
+										},
+									})
+								}
+							/>
+							<FFTChart
+								chart={fftChart}
+								width="100%"
+								height="320px"
+								setChart={setFftChart}
+								minFreq={minFreq}
+								maxFreq={maxFreq}
+							/>
+						</div>
 					</div>
 					<div className="chart">
 						<VoltageData voltageData={voltageData} />
