@@ -5,6 +5,7 @@ import { Data } from "./types";
 import { ECharts } from "echarts/core";
 import FFTChart from "./FFTChart";
 import FFTData from "./FFTData";
+import VoltageData from "./VoltageData";
 
 const VOLTAGE_DATA_SIZE = 1000;
 
@@ -122,6 +123,15 @@ const App = () => {
 		if (typeof address === "string") setAddress(address);
 	}
 
+	function handleSnapShot(e: any) {
+		ws.current?.send(
+			JSON.stringify({
+				type: "snapshot",
+				value: { voltageData: voltageData, fftData: fftData },
+			})
+		);
+	}
+
 	return (
 		<div id="control-center">
 			<header>
@@ -158,6 +168,9 @@ const App = () => {
 						<input type="range" min="0" max="100" step="1" />
 						<label>Sample Rate</label>
 						<input type="number" min="1" max="10000" />
+						<button onClick={handleSnapShot}>
+							Take Data Snapshot
+						</button>
 					</div>
 				</aside>
 				<main id="data-display">
@@ -178,7 +191,10 @@ const App = () => {
 							maxFreq={maxFreq}
 						/>
 					</div>
-					<div className="chart"></div>
+					<div className="chart">
+						{" "}
+						<VoltageData voltageData={voltageData} />
+					</div>
 					<div className="chart">
 						<FFTData
 							fftData={fftData}

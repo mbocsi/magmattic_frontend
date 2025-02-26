@@ -54,9 +54,9 @@ const FFTData = ({
 				></input>
 			</div>
 			<h2>
-				{maxMagnitude[0].toFixed(3)} Hz : {maxMagnitude[1].toFixed(3)} V
+				{maxMagnitude[0].toFixed(3)} Hz : {maxMagnitude[1].toFixed(6)} V
 			</h2>
-			<h2>RMS: {rms.toFixed(5)} V</h2>
+			<h2>RMS: {rms.toFixed(9)} V</h2>
 		</div>
 	);
 };
