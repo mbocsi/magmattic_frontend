@@ -124,12 +124,19 @@ const App = () => {
 	}
 
 	function handleSnapShot(e: any) {
-		ws.current?.send(
-			JSON.stringify({
-				type: "snapshot",
-				value: { voltageData: voltageData, fftData: fftData },
-			})
+		const jsonString = JSON.stringify(
+			{ voltageData: voltageData, fftData: fftData },
+			null,
+			2
 		);
+		const newWindow = window.open();
+		if (!newWindow) return;
+		newWindow.document.write(`<pre>${jsonString}</pre>`);
+		newWindow.document.close();
+	}
+
+	function handleControl(data: {}) {
+		ws.current?.send(JSON.stringify(data));
 	}
 
 	return (
@@ -163,14 +170,38 @@ const App = () => {
 						</button>
 					</form>
 					<div id="controls">
-						<h2>Controls (nop)</h2>
-						<label>Spin Speed</label>
-						<input type="range" min="0" max="100" step="1" />
-						<label>Sample Rate</label>
-						<input type="number" min="1" max="10000" />
+						<h2>Controls</h2>
 						<button onClick={handleSnapShot}>
 							Take Data Snapshot
 						</button>
+						<label htmlFor="fft-duration">
+							FFT Sample Duration (samples)
+						</label>
+						<input
+							name="fft-duration"
+							type="number"
+							defaultValue={1000}
+							onBlur={(e) =>
+								handleControl({
+									type: "adc",
+									value: {
+										M: e.target.value,
+									},
+								})
+							}
+						/>
+						<label htmlFor="batch-size">Data batch size</label>
+						<input
+							name="batch-size"
+							type="number"
+							defaultValue={32}
+							onBlur={(e) =>
+								handleControl({
+									type: "adc",
+									value: { N: e.target.value },
+								})
+							}
+						/>
 					</div>
 				</aside>
 				<main id="data-display">
@@ -192,7 +223,6 @@ const App = () => {
 						/>
 					</div>
 					<div className="chart">
-						{" "}
 						<VoltageData voltageData={voltageData} />
 					</div>
 					<div className="chart">
