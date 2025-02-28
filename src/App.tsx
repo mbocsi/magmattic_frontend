@@ -36,7 +36,6 @@ const App = () => {
 
 	const voltageChartRef = useRef<ECharts | null>(null);
 	const fftChartRef = useRef<ECharts | null>(null);
-	const counterRef = useRef<number>(1000);
 
 	useEffect(() => {
 		voltageChartRef.current = voltageChart;
@@ -72,16 +71,21 @@ const App = () => {
 			switch (data.type) {
 				case "voltage":
 					setVoltageData((prevData: Data) => {
-						const newData = [...prevData];
-						data.val.forEach((val: number, i: number) => {
-							newData.shift();
-							newData.push({
-								name: counterRef.current + i,
-								value: [counterRef.current + i, val],
-							});
-						});
-						counterRef.current += data.val.length;
-						return newData;
+						const newData = prevData.slice(data.val.length);
+						const counter =
+							prevData.length > 0
+								? prevData[prevData.length - 1].name + 1
+								: 0;
+
+						const updatedData = data.val.map(
+							(val: number, i: number) => ({
+								name: counter + i,
+								value: [counter + i, val],
+							})
+						);
+
+						console.log("update!");
+						return [...newData, ...updatedData];
 					});
 					break;
 
@@ -195,7 +199,7 @@ const App = () => {
 						<input
 							name="batch-size"
 							type="number"
-							defaultValue={32}
+							defaultValue={16}
 							onBlur={(e) =>
 								handleControl({
 									type: "adc",
@@ -207,6 +211,7 @@ const App = () => {
 						<input
 							id="rolling-fft"
 							type="checkbox"
+							defaultChecked={true}
 							onChange={(e) =>
 								handleControl({
 									type: "adc",
