@@ -34,6 +34,8 @@ const App = () => {
 	const [minFreq, setMinFreq] = useState<number>(0);
 	const [maxFreq, setMaxFreq] = useState<number>(500);
 
+	const [windowFunc, setWindowFunc] = useState<string>("rectangular");
+
 	const voltageChartRef = useRef<ECharts | null>(null);
 	const fftChartRef = useRef<ECharts | null>(null);
 
@@ -96,6 +98,7 @@ const App = () => {
 							value: val,
 						}))
 					);
+					setWindowFunc(data.metadata.window);
 					break;
 
 				default:
@@ -265,6 +268,7 @@ const App = () => {
 							setMinFreq={setMinFreq}
 							maxFreq={maxFreq}
 							setMaxFreq={setMaxFreq}
+							windowFunc={windowFunc}
 						/>
 					</div>
 				</main>
