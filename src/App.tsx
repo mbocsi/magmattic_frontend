@@ -147,6 +147,11 @@ const App = () => {
 		ws.current?.send(JSON.stringify(data));
 	}
 
+	function handleWindowChange(e: any) {
+		const value = e.target.value;
+		handleControl({ type: "adc", value: { window: value } });
+	}
+
 	return (
 		<div id="control-center">
 			<header>
@@ -222,6 +227,16 @@ const App = () => {
 								})
 							}
 						/>
+						<label htmlFor="window">Window Function</label>
+						<select onChange={handleWindowChange}>
+							<option value="rectangular">Rectangular</option>
+							<option value="hann">Hann</option>
+							<option value="hamming">Hamming</option>
+							<option value="blackman">Blackman</option>
+							<option value="blackmanharris">
+								Blackman-Harris
+							</option>
+						</select>
 					</div>
 				</aside>
 				<main id="data-display">
