@@ -7,7 +7,7 @@ import FFTData from "./FFTData";
 import VoltageData from "./VoltageData";
 import "./App.css";
 
-const VOLTAGE_DATA_SIZE = 1000;
+const VOLTAGE_DATA_SIZE = 1024;
 
 const App = () => {
 	const ws = useRef<WebSocket | null>(null);
@@ -187,18 +187,32 @@ const App = () => {
 						<button onClick={handleSnapShot}>
 							Take Data Snapshot
 						</button>
-						<label htmlFor="fft-duration">
-							FFT Sample Duration (samples)
-						</label>
+						<label htmlFor="fft-duration">Signal Length</label>
 						<input
 							name="fft-duration"
 							type="number"
-							defaultValue={1000}
+							defaultValue={1024}
 							onBlur={(e) =>
 								handleControl({
 									type: "adc",
 									value: {
-										M: parseInt(e.target.value),
+										Nsig: parseInt(e.target.value),
+									},
+								})
+							}
+						/>
+						<label htmlFor="fft-duration">
+							Total FFT Length (padding)
+						</label>
+						<input
+							name="fft-duration"
+							type="number"
+							defaultValue={1024}
+							onBlur={(e) =>
+								handleControl({
+									type: "adc",
+									value: {
+										Ntot: parseInt(e.target.value),
 									},
 								})
 							}
@@ -211,7 +225,7 @@ const App = () => {
 							onBlur={(e) =>
 								handleControl({
 									type: "adc",
-									value: { N: parseInt(e.target.value) },
+									value: { Nbuf: parseInt(e.target.value) },
 								})
 							}
 						/>

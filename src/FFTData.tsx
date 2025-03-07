@@ -24,6 +24,10 @@ const FFTData = ({
 	setMaxFreq: (x: number) => void;
 	windowFunc: string;
 }) => {
+	const freq_resolution =
+		(fftData[fftData.length - 1].value[0] - fftData[0].value[0]) /
+		fftData.length;
+
 	const maxMagnitude = fftData
 		.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
 		.reduce(
@@ -34,7 +38,11 @@ const FFTData = ({
 
 	const raw_power = fftData
 		.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
-		.reduce((curSum, curVal) => curSum + Math.pow(curVal.value[1], 2), 0);
+		.reduce(
+			(curSum, curVal) =>
+				curSum + freq_resolution * Math.pow(curVal.value[1], 2),
+			0
+		);
 
 	const estimated_power = raw_power / windows[windowFunc].enbw;
 	const estimated_amplitude = Math.sqrt(estimated_power);
