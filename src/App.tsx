@@ -55,6 +55,12 @@ const App = () => {
 
 		socket.onopen = () => {
 			console.log("Connected to server:", address);
+			socket.send(
+				JSON.stringify({
+					topic: "subscribe",
+					payload: { topics: ["voltage/data", "fft/data"] },
+				})
+			);
 			setIsConnected(true);
 		};
 
