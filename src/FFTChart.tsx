@@ -5,11 +5,14 @@ import {
 	TitleComponent,
 	TooltipComponent,
 	GridComponent,
+	ToolboxComponent,
+	DataZoomComponent,
+	BrushComponent,
+	MarkPointComponent,
 } from "echarts/components";
 import { LineChart } from "echarts/charts";
 import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
-import { Data } from "./types";
 
 echarts.use([
 	TitleComponent,
@@ -18,6 +21,10 @@ echarts.use([
 	LineChart,
 	CanvasRenderer,
 	UniversalTransition,
+	ToolboxComponent,
+	DataZoomComponent,
+	BrushComponent,
+	MarkPointComponent,
 ]);
 
 const FFTChart = ({
@@ -25,40 +32,75 @@ const FFTChart = ({
 	setChart,
 	width,
 	height,
-	minFreq,
-	maxFreq,
+	setMinFreq,
+	setMaxFreq,
 }: {
 	chart: echarts.ECharts | null;
 	setChart: (x: echarts.ECharts) => void;
 	width: string;
 	height: string;
-	minFreq: number;
-	maxFreq: number;
+	setMinFreq: (x: number) => void;
+	setMaxFreq: (x: number) => void;
 }) => {
 	useEffect(() => {
 		var chartDom = document.getElementById("fft-chart");
-		var chart = echarts.init(chartDom);
+		var chart = echarts.init(chartDom, null, {
+			renderer: "canvas",
+			// useDirtyRect: false,
+		});
 		console.log(chart);
 		setChart(chart);
 		var option = {
 			title: {
 				text: "FFT",
 			},
-			tooltip: {
-				trigger: "axis",
-				formatter: function (params: Data) {
-					const point = params[0];
-					return point.name + " : " + point.value[1];
-				},
-				axisPointer: {
-					animation: false,
+			grid: {
+				bottom: 80,
+			},
+			toolbox: {
+				feature: {
+					dataZoom: {
+						yAxisIndex: "none",
+					},
+					restore: {},
+					saveAsImage: {},
 				},
 			},
+			brush: {
+				toolbox: ["lineX", "clear"],
+				xAxisIndex: 0,
+			},
+			tooltip: {
+				trigger: "axis",
+				axisPointer: {
+					type: "cross",
+					animation: false,
+					label: {
+						backgroundColor: "#505765",
+					},
+				},
+			},
+			dataZoom: [
+				{
+					show: true,
+					realtime: true,
+					start: 0,
+					end: 25,
+				},
+				{
+					type: "inside",
+					realtime: true,
+					start: 0,
+					end: 25,
+				},
+			],
 			xAxis: {
 				type: "value",
 				splitLine: {
 					show: false,
 				},
+				axisLine: { onZero: false },
+				boundaryGap: false,
 			},
 			yAxis: {
 				type: "value",
@@ -69,9 +111,19 @@ const FFTChart = ({
 			series: [
 				{
 					name: "FFT",
+					areaStyle: {},
+					lineStyle: {
+						width: 1,
+					},
+					emphasis: {
+						focus: "series",
+					},
 					data: [],
 					showSymbol: false,
 					type: "line",
+					markPoint: {
+						data: [{ type: "max", name: "Max", symbol: "pin" }],
+					},
 				},
 			],
 			animationThreshold: 2000,
@@ -80,16 +132,26 @@ const FFTChart = ({
 		};
 
 		option && chart.setOption(option);
+
+		chart.on("brushSelected", function (params) {
+			try {
+				const [minFreq, maxFreq] = params.batch[0].areas[0].coordRange;
+				setMinFreq(minFreq);
+				setMaxFreq(maxFreq);
+			} catch {
+				// This is some quality javascript right here
+			}
+		});
 	}, []);
 
-	useEffect(() => {
-		chart?.setOption({
-			xAxis: {
-				min: minFreq,
-				max: maxFreq,
-			},
-		});
-	}, [minFreq, maxFreq]);
+	// useEffect(() => {
+	// 	chart?.setOption({
+	// 		xAxis: {
+	// 			min: minFreq,
+	// 			max: maxFreq,
+	// 		},
+	// 	});
+	// }, [minFreq, maxFreq]);
 
 	return <div id="fft-chart" style={{ width: width, height: height }} />;
 };

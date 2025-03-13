@@ -262,33 +262,19 @@ const App = () => {
 					<div className="chart">
 						<VoltageChart
 							width="100%"
-							height="320px"
+							height="350px"
 							setChart={setVoltageChart}
 						/>
 					</div>
 					<div className="chart">
 						<div className="chart-controls">
-							<input
-								type="range"
-								min={-6}
-								max={2}
-								step={0.5}
-								onChange={(e) =>
-									fftChart?.setOption({
-										yAxis: {
-											min: 0,
-											max: 10 ** parseInt(e.target.value),
-										},
-									})
-								}
-							/>
 							<FFTChart
 								chart={fftChart}
 								width="100%"
-								height="320px"
+								height="350px"
 								setChart={setFftChart}
-								minFreq={minFreq}
-								maxFreq={maxFreq}
+								setMinFreq={setMinFreq}
+								setMaxFreq={setMaxFreq}
 							/>
 						</div>
 					</div>

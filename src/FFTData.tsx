@@ -59,7 +59,7 @@ const FFTData = ({
 
 	return (
 		<div>
-			<div className="freq-select">
+			{/* <div className="freq-select">
 				<label>Frequency Range (hz):</label>
 				<input
 					id="min-freq"
@@ -76,7 +76,7 @@ const FFTData = ({
 					defaultValue={500}
 					onChange={(e) => setMaxFreq(parseFloat(e.target.value))}
 				></input>
-			</div>
+			</div> */}
 			<h3>
 				Peak: {maxMagnitude[0].toFixed(3)} Hz :{" "}
 				{maxMagnitude[1].toFixed(6)} V

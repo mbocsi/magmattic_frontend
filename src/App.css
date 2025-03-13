@@ -54,9 +54,9 @@ header {
 }
 
 #data-display {
-  flex-grow: 1;
+  /* flex-grow: 1; */
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: 20px;
   padding: 1rem;
   overflow: hidden;
@@ -67,7 +67,7 @@ header {
   padding: 10px;
   border-radius: 8px;
   /* width: 100%; /* Ensure charts do not exceed container */
-  max-width: 800px; /* Set a reasonable max width */
+  /* max-width: 800px; /*Set a reasonable max width */
   min-width: 480px;
   overflow: hidden;
 }
