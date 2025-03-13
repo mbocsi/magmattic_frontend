@@ -136,8 +136,26 @@ const App = () => {
 	}
 
 	function handleSnapShot(e: any) {
+		const fftSignalLength =
+			document.getElementById("fft-signal-length")?.value;
+		const fftTotalLength =
+			document.getElementById("fft-total-length")?.value;
+		const batchSize = document.getElementById("batch-size")?.value;
+		const rollingFft = document.getElementById("rolling-fft")?.checked;
+		const windowFunction =
+			document.getElementById("window-function")?.value;
 		const jsonString = JSON.stringify(
-			{ voltageData: voltageData, fftData: fftData },
+			{
+				voltageData: voltageData,
+				fftData: fftData,
+				metadata: {
+					fftSignalLength: parseInt(fftSignalLength),
+					fftTotalLength: parseInt(fftTotalLength),
+					batchSize: parseInt(batchSize),
+					rollingFft: rollingFft,
+					windowFunction: windowFunction,
+				},
+			},
 			null,
 			2
 		);
@@ -192,9 +210,9 @@ const App = () => {
 						<button onClick={handleSnapShot}>
 							Take Data Snapshot
 						</button>
-						<label htmlFor="fft-duration">Signal Length</label>
+						<label htmlFor="fft-signal-length">Signal Length</label>
 						<input
-							name="fft-duration"
+							id="fft-signal-length"
 							type="number"
 							defaultValue={1024}
 							onBlur={(e) =>
@@ -206,11 +224,11 @@ const App = () => {
 								})
 							}
 						/>
-						<label htmlFor="fft-duration">
+						<label htmlFor="fft-total-length">
 							Total FFT Length (padding)
 						</label>
 						<input
-							name="fft-duration"
+							id="fft-total-length"
 							type="number"
 							defaultValue={1024}
 							onBlur={(e) =>
@@ -224,7 +242,7 @@ const App = () => {
 						/>
 						<label htmlFor="batch-size">Data batch size</label>
 						<input
-							name="batch-size"
+							id="batch-size"
 							type="number"
 							defaultValue={16}
 							onBlur={(e) =>
@@ -246,8 +264,11 @@ const App = () => {
 								})
 							}
 						/>
-						<label htmlFor="window">Window Function</label>
-						<select onChange={handleWindowChange}>
+						<label htmlFor="window-function">Window Function</label>
+						<select
+							onChange={handleWindowChange}
+							id="window-function"
+						>
 							<option value="rectangular">Rectangular</option>
 							<option value="hann">Hann</option>
 							<option value="hamming">Hamming</option>
