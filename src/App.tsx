@@ -70,30 +70,29 @@ const App = () => {
 
 		socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-			switch (data.type) {
-				case "voltage":
+			switch (data.topic) {
+				case "voltage/data":
 					setVoltageData((prevData: Data) => {
-						const newData = prevData.slice(data.val.length);
+						const newData = prevData.slice(data.payload.length);
 						const counter =
 							prevData.length > 0
 								? prevData[prevData.length - 1].name + 1
 								: 0;
 
-						const updatedData = data.val.map(
+						const updatedData = data.payload.map(
 							(val: number, i: number) => ({
 								name: counter + i,
 								value: [counter + i, val],
 							})
 						);
 
-						console.log("update!");
 						return [...newData, ...updatedData];
 					});
 					break;
 
-				case "fft":
+				case "fft/data":
 					setFftData(
-						data.val.map((val: [number, number]) => ({
+						data.payload.map((val: [number, number]) => ({
 							name: val[0],
 							value: val,
 						}))
@@ -102,7 +101,7 @@ const App = () => {
 					break;
 
 				default:
-					console.log(`Unknown type detected: ${data.type}`);
+					console.log(`Unknown topic detected: ${data.topic}`);
 			}
 		};
 
@@ -149,7 +148,7 @@ const App = () => {
 
 	function handleWindowChange(e: any) {
 		const value = e.target.value;
-		handleControl({ type: "adc", value: { window: value } });
+		handleControl({ topic: "adc/command", payload: { window: value } });
 	}
 
 	return (
@@ -194,8 +193,8 @@ const App = () => {
 							defaultValue={1024}
 							onBlur={(e) =>
 								handleControl({
-									type: "adc",
-									value: {
+									topic: "adc/command",
+									payload: {
 										Nsig: parseInt(e.target.value),
 									},
 								})
@@ -210,8 +209,8 @@ const App = () => {
 							defaultValue={1024}
 							onBlur={(e) =>
 								handleControl({
-									type: "adc",
-									value: {
+									topic: "adc/command",
+									payload: {
 										Ntot: parseInt(e.target.value),
 									},
 								})
@@ -224,8 +223,8 @@ const App = () => {
 							defaultValue={16}
 							onBlur={(e) =>
 								handleControl({
-									type: "adc",
-									value: { Nbuf: parseInt(e.target.value) },
+									topic: "adc/command",
+									payload: { Nbuf: parseInt(e.target.value) },
 								})
 							}
 						/>
@@ -236,8 +235,8 @@ const App = () => {
 							defaultChecked={true}
 							onChange={(e) =>
 								handleControl({
-									type: "adc",
-									value: { rolling_fft: e.target.checked },
+									topic: "adc/command",
+									payload: { rolling_fft: e.target.checked },
 								})
 							}
 						/>
