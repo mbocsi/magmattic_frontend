@@ -18,10 +18,9 @@ const VoltageData = ({ voltageData }: { voltageData: Data }) => {
 
 	const rms = Math.sqrt(
 		voltageData.reduce(
-			(curSum, curVal) =>
-				curSum + Math.pow(curVal.value[1], 2) - Math.pow(mean, 2),
+			(curSum, curVal) => curSum + Math.pow(curVal.value[1] - mean, 2),
 			0
-		) / 1000
+		) / voltageData.length
 	);
 
 	return (

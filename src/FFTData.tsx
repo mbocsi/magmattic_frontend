@@ -54,7 +54,7 @@ const FFTData = ({
 				(curSum, curVal) => curSum + Math.pow(curVal.value[1], 2),
 				0
 			) /
-			(maxFreq - minFreq)
+			((maxFreq - minFreq) / freq_resolution)
 	);
 
 	return (
@@ -85,22 +85,28 @@ const FFTData = ({
 				<thead>
 					<tr className="data-header">
 						<th className="data-cell">Measurement</th>
-						<th className="data-cell">Value (V)</th>
+						<th className="data-cell">Value</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td className="data-cell">Windowed RMS</td>
-						<td className="data-cell">{rms.toFixed(9)}</td>
+						<td className="data-cell">
+							Amplitude Spectral Density
+						</td>
+						<td className="data-cell">
+							{rms.toFixed(9)} V<sub>RMS</sub>/Hz<sup>1/2</sup>
+						</td>
 					</tr>
 					<tr>
 						<td className="data-cell">Windowed Power</td>
-						<td className="data-cell">{raw_power.toFixed(9)}</td>
+						<td className="data-cell">
+							{raw_power.toFixed(9)} V<sup>2</sup>
+						</td>
 					</tr>
 					<tr>
 						<td className="data-cell">Estimated Power</td>
 						<td className="data-cell">
-							{estimated_power.toFixed(9)}
+							{estimated_power.toFixed(9)} V<sup>2</sup>
 						</td>
 					</tr>
 					<tr>
@@ -108,7 +114,7 @@ const FFTData = ({
 							<strong>Estimated Amplitude</strong>
 						</td>
 						<td className="data-cell">
-							{estimated_amplitude.toFixed(9)}
+							{estimated_amplitude.toFixed(9)} V
 						</td>
 					</tr>
 				</tbody>

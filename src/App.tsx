@@ -7,7 +7,7 @@ import FFTData from "./FFTData";
 import VoltageData from "./VoltageData";
 import "./App.css";
 
-const VOLTAGE_DATA_SIZE = 1024;
+const VOLTAGE_DATA_SIZE = 1200;
 
 const App = () => {
 	const ws = useRef<WebSocket | null>(null);

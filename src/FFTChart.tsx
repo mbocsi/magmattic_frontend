@@ -59,10 +59,6 @@ const FFTChart = ({
 			},
 			toolbox: {
 				feature: {
-					dataZoom: {
-						yAxisIndex: "none",
-					},
-					restore: {},
 					saveAsImage: {},
 				},
 			},
