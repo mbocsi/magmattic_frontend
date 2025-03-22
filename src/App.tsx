@@ -35,6 +35,11 @@ const App = () => {
 	const [maxFreq, setMaxFreq] = useState<number>(500);
 
 	const [windowFunc, setWindowFunc] = useState<string>("rectangular");
+	const [Nbuf, setNbuf] = useState<number>(32);
+	const [Nsig, setNsig] = useState<number>(1024);
+	const [Ntot, setNtot] = useState<number>(1024);
+	const [rollingFft, setRollingFft] = useState<boolean>(false);
+	const [sampleRate, setSampleRate] = useState<number>(1000);
 
 	const voltageChartRef = useRef<ECharts | null>(null);
 	const fftChartRef = useRef<ECharts | null>(null);
@@ -58,7 +63,14 @@ const App = () => {
 			socket.send(
 				JSON.stringify({
 					topic: "subscribe",
-					payload: { topics: ["voltage/data", "fft/data"] },
+					payload: {
+						topics: [
+							"voltage/data",
+							"fft/data",
+							"adc/status",
+							"calculation/status",
+						],
+					},
 				})
 			);
 			setIsConnected(true);
@@ -106,8 +118,22 @@ const App = () => {
 					setWindowFunc(data.metadata.window);
 					break;
 
+				case "adc/status":
+					console.log("Received adc status: ", data);
+					setNbuf(data.payload.Nsig);
+					setSampleRate(data.payload.sample_rate);
+					break;
+
+				case "calculation/status":
+					console.log("Received calculation status: ", data);
+					setNsig(data.payload.Nsig);
+					setNtot(data.payload.Ntot);
+					setWindowFunc(data.payload.window);
+					setRollingFft(data.payload.rolling_fft);
+					break;
+
 				default:
-					console.log(`Unknown topic detected: ${data.topic}`);
+					console.log(`Unknown topic detected: ${data}`);
 			}
 		};
 
@@ -217,12 +243,13 @@ const App = () => {
 						<input
 							id="fft-signal-length"
 							type="number"
-							defaultValue={1024}
-							onBlur={(e) =>
+							value={Nsig}
+							onChange={(e) => setNsig(parseInt(e.target.value))}
+							onBlur={() =>
 								handleControl({
 									topic: "calculation/command",
 									payload: {
-										Nsig: parseInt(e.target.value),
+										Nsig: Nsig,
 									},
 								})
 							}
@@ -233,12 +260,13 @@ const App = () => {
 						<input
 							id="fft-total-length"
 							type="number"
-							defaultValue={1024}
-							onBlur={(e) =>
+							value={Ntot}
+							onChange={(e) => setNtot(parseInt(e.target.value))}
+							onBlur={() =>
 								handleControl({
 									topic: "calculation/command",
 									payload: {
-										Ntot: parseInt(e.target.value),
+										Ntot: Ntot,
 									},
 								})
 							}
@@ -247,11 +275,27 @@ const App = () => {
 						<input
 							id="batch-size"
 							type="number"
-							defaultValue={16}
-							onBlur={(e) =>
+							value={Nbuf}
+							onChange={(e) => setNbuf(parseInt(e.target.value))}
+							onBlur={() =>
 								handleControl({
 									topic: "adc/command",
-									payload: { Nbuf: parseInt(e.target.value) },
+									payload: { Nbuf: Nbuf },
+								})
+							}
+						/>
+						<label htmlFor="sample-rate">
+							ADC sample rate (SPS)
+						</label>
+						<input
+							id="sample-rate"
+							type="number"
+							value={sampleRate}
+							onChange={(e) => setNbuf(parseInt(e.target.value))}
+							onBlur={() =>
+								handleControl({
+									topic: "adc/command",
+									payload: { sample_rate: sampleRate },
 								})
 							}
 						/>
@@ -259,17 +303,19 @@ const App = () => {
 						<input
 							id="rolling-fft"
 							type="checkbox"
-							defaultChecked={true}
-							onChange={(e) =>
+							checked={rollingFft}
+							onChange={(e) => {
+								setRollingFft(e.target.checked);
 								handleControl({
 									topic: "calculation/command",
 									payload: { rolling_fft: e.target.checked },
-								})
-							}
+								});
+							}}
 						/>
 						<label htmlFor="window-function">Window Function</label>
 						<select
 							onChange={handleWindowChange}
+							value={windowFunc}
 							id="window-function"
 						>
 							<option value="rectangular">Rectangular</option>
