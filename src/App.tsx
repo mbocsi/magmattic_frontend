@@ -172,7 +172,10 @@ const App = () => {
 
 	function handleWindowChange(e: any) {
 		const value = e.target.value;
-		handleControl({ topic: "adc/command", payload: { window: value } });
+		handleControl({
+			topic: "calculation/command",
+			payload: { window: value },
+		});
 	}
 
 	return (
@@ -217,7 +220,7 @@ const App = () => {
 							defaultValue={1024}
 							onBlur={(e) =>
 								handleControl({
-									topic: "adc/command",
+									topic: "calculation/command",
 									payload: {
 										Nsig: parseInt(e.target.value),
 									},
@@ -233,7 +236,7 @@ const App = () => {
 							defaultValue={1024}
 							onBlur={(e) =>
 								handleControl({
-									topic: "adc/command",
+									topic: "calculation/command",
 									payload: {
 										Ntot: parseInt(e.target.value),
 									},
@@ -259,7 +262,7 @@ const App = () => {
 							defaultChecked={true}
 							onChange={(e) =>
 								handleControl({
-									topic: "adc/command",
+									topic: "calculation/command",
 									payload: { rolling_fft: e.target.checked },
 								})
 							}
