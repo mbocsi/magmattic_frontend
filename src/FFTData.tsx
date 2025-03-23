@@ -12,16 +12,12 @@ const windows: { [key: string]: { cg: number; enbw: number } } = {
 const FFTData = ({
 	fftData,
 	minFreq,
-	setMinFreq,
 	maxFreq,
-	setMaxFreq,
 	windowFunc,
 }: {
 	fftData: Data;
 	minFreq: number;
-	setMinFreq: (x: number) => void;
 	maxFreq: number;
-	setMaxFreq: (x: number) => void;
 	windowFunc: string;
 }) => {
 	const freq_resolution =

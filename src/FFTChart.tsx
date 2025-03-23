@@ -28,14 +28,12 @@ echarts.use([
 ]);
 
 const FFTChart = ({
-	chart,
 	setChart,
 	width,
 	height,
 	setMinFreq,
 	setMaxFreq,
 }: {
-	chart: echarts.ECharts | null;
 	setChart: (x: echarts.ECharts) => void;
 	width: string;
 	height: string;
@@ -129,7 +127,7 @@ const FFTChart = ({
 
 		option && chart.setOption(option);
 
-		chart.on("brushSelected", function (params) {
+		chart.on("brushSelected", function (params: any) {
 			try {
 				const [minFreq, maxFreq] = params.batch[0].areas[0].coordRange;
 				setMinFreq(minFreq);

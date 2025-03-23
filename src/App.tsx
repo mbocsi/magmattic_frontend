@@ -12,9 +12,7 @@ const VOLTAGE_DATA_SIZE = 1200;
 const App = () => {
 	const ws = useRef<WebSocket | null>(null);
 	const [isConnected, setIsConnected] = useState<boolean>(false);
-	const [address, setAddress] = useState<string | null>(
-		"ws://localhost:44444"
-	);
+	const [address, setAddress] = useState<string | null>("ws://magpi-server");
 
 	const [voltageData, setVoltageData] = useState<Data>(
 		Array.from({ length: VOLTAGE_DATA_SIZE }, (_, i) => ({
@@ -161,25 +159,17 @@ const App = () => {
 		if (typeof address === "string") setAddress(address);
 	}
 
-	function handleSnapShot(e: any) {
-		const fftSignalLength =
-			document.getElementById("fft-signal-length")?.value;
-		const fftTotalLength =
-			document.getElementById("fft-total-length")?.value;
-		const batchSize = document.getElementById("batch-size")?.value;
-		const rollingFft = document.getElementById("rolling-fft")?.checked;
-		const windowFunction =
-			document.getElementById("window-function")?.value;
+	function handleSnapShot() {
 		const jsonString = JSON.stringify(
 			{
 				voltageData: voltageData,
 				fftData: fftData,
 				metadata: {
-					fftSignalLength: parseInt(fftSignalLength),
-					fftTotalLength: parseInt(fftTotalLength),
-					batchSize: parseInt(batchSize),
+					fftSignalLength: Nsig,
+					fftTotalLength: Ntot,
+					batchSize: Nbuf,
 					rollingFft: rollingFft,
-					windowFunction: windowFunction,
+					windowFunction: windowFunc,
 				},
 			},
 			null,
@@ -341,7 +331,6 @@ const App = () => {
 					<div className="chart">
 						<div className="chart-controls">
 							<FFTChart
-								chart={fftChart}
 								width="100%"
 								height="350px"
 								setChart={setFftChart}
@@ -357,9 +346,7 @@ const App = () => {
 						<FFTData
 							fftData={fftData}
 							minFreq={minFreq}
-							setMinFreq={setMinFreq}
 							maxFreq={maxFreq}
-							setMaxFreq={setMaxFreq}
 							windowFunc={windowFunc}
 						/>
 					</div>
