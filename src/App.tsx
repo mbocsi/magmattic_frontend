@@ -291,7 +291,9 @@ const App = () => {
 							id="sample-rate"
 							type="number"
 							value={sampleRate}
-							onChange={(e) => setNbuf(parseInt(e.target.value))}
+							onChange={(e) =>
+								setSampleRate(parseInt(e.target.value))
+							}
 							onBlur={() =>
 								handleControl({
 									topic: "adc/command",
