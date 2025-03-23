@@ -12,7 +12,6 @@ const VOLTAGE_DATA_SIZE = 1200;
 const App = () => {
 	const ws = useRef<WebSocket | null>(null);
 	const [isConnected, setIsConnected] = useState<boolean>(false);
-	const [address, setAddress] = useState<string | null>("ws://magpi-server");
 
 	const [voltageData, setVoltageData] = useState<Data>(
 		Array.from({ length: VOLTAGE_DATA_SIZE }, (_, i) => ({
@@ -48,6 +47,26 @@ const App = () => {
 	}, [voltageChart]);
 
 	useEffect(() => {
+		connectWebsocket("ws://magpi-server");
+
+		return () => {
+			ws.current?.close();
+		};
+	}, []);
+
+	useEffect(() => {
+		voltageChartRef?.current?.setOption({
+			series: [{ data: voltageData }],
+		});
+	}, [voltageData]);
+
+	useEffect(() => {
+		fftChartRef?.current?.setOption({
+			series: [{ data: fftData }],
+		});
+	}, [fftData]);
+
+	function connectWebsocket(address: string) {
 		if (ws.current) {
 			ws.current.close(); // Close existing connection before creating a new one
 		}
@@ -134,29 +153,13 @@ const App = () => {
 					console.log(`Unknown topic detected: ${data}`);
 			}
 		};
-
-		return () => {
-			socket.close();
-		};
-	}, [address]);
-
-	useEffect(() => {
-		voltageChartRef?.current?.setOption({
-			series: [{ data: voltageData }],
-		});
-	}, [voltageData]);
-
-	useEffect(() => {
-		fftChartRef?.current?.setOption({
-			series: [{ data: fftData }],
-		});
-	}, [fftData]);
+	}
 
 	function handleConnect(e: any) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const address = formData.get("address");
-		if (typeof address === "string") setAddress(address);
+		if (typeof address === "string") connectWebsocket(address);
 	}
 
 	function handleSnapShot() {
@@ -211,7 +214,7 @@ const App = () => {
 							}
 							name="address"
 							placeholder="ws://0.0.0.0:44444"
-							defaultValue="ws://localhost:44444"
+							defaultValue="ws://magpi-server"
 						/>
 						<button type="submit" className="btn-primary">
 							Connect
@@ -219,7 +222,7 @@ const App = () => {
 						<button
 							type="button"
 							className="btn-secondary"
-							onClick={() => setAddress(null)}
+							onClick={() => ws.current?.close()}
 						>
 							Disconnect
 						</button>
