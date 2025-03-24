@@ -47,7 +47,7 @@ const App = () => {
 	}, [voltageChart]);
 
 	useEffect(() => {
-		connectWebsocket("ws://magpi-server");
+		connectWebsocket("ws://magpi.local:44444");
 
 		return () => {
 			ws.current?.close();
@@ -214,7 +214,7 @@ const App = () => {
 							}
 							name="address"
 							placeholder="ws://0.0.0.0:44444"
-							defaultValue="ws://magpi-server"
+							defaultValue="ws://magpi.local:44444"
 						/>
 						<button type="submit" className="btn-primary">
 							Connect
