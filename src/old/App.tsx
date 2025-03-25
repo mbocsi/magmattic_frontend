@@ -6,6 +6,8 @@ import FFTChart from "./FFTChart";
 import FFTData from "./FFTData";
 import VoltageData from "./VoltageData";
 import "./App.css";
+import Sidebar from "./components/sidebar";
+import { Route, Routes } from "react-router";
 
 const VOLTAGE_DATA_SIZE = 1200;
 
@@ -197,13 +199,11 @@ const App = () => {
 		});
 	}
 
-	return (
-		<div id="control-center">
-			<header>
-				<h1>Magmattic (dev) Client </h1>
-			</header>
+	return <div>test</div>;
+	/* <div id="control-center">
 			<div className="layout">
-				<aside id="sidebar">
+				{/* <Sidebar /> */
+	/* <aside id="sidebar">
 					<form onSubmit={handleConnect} id="connect-form">
 						<input
 							type="text"
@@ -322,7 +322,7 @@ const App = () => {
 							</option>
 						</select>
 					</div>
-				</aside>
+				</aside> 
 				<main id="data-display">
 					<div className="chart">
 						<VoltageChart
@@ -355,8 +355,7 @@ const App = () => {
 					</div>
 				</main>
 			</div>
-		</div>
-	);
+		</div> */
 };
 
 export default App;
