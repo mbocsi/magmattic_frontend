@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import "./sidebar.css";
 import { NavLink } from "react-router";
+import ToggleButton from "./togglebutton";
+import { useState } from "react";
 
 const navItems = [
 	{ name: "Dashboard", href: "/", icon: Activity },
@@ -15,6 +17,7 @@ const navItems = [
 ];
 export default function Sidebar() {
 	const connected = false;
+	const [rollingFft, setRollingFft] = useState<boolean>(false);
 	return (
 		<aside className="sidebar">
 			<div className="sidebar-content">
@@ -30,19 +33,54 @@ export default function Sidebar() {
 					))}
 				</ControlSection>
 				<ControlSection title="Server">
-					<label>Server Address</label>
-					<input
-						className={
-							connected ? "input-connected" : "input-disconnected"
-						}
-						defaultValue="ws://magpi.local:44444"
-					/>
-					<button className="btn-primary">Connect</button>
-					<button className="btn-secondary">Disconnect</button>
+					<label htmlFor="server-address">Server Address</label>
+					<div style={{ width: "100%" }}>
+						<input
+							id="server-address"
+							style={{ maxWidth: "100%" }}
+							className={
+								connected
+									? "input-connected"
+									: "input-disconnected"
+							}
+							defaultValue="ws://magpi.local:44444"
+						/>
+					</div>
+					<div className="socket-buttons">
+						<button className="btn-primary">Connect</button>
+						<button className="btn-secondary">Disconnect</button>
+					</div>
 				</ControlSection>
 				<ControlSection title="Controls">
-					<label>Nbuf</label>
-					<input />
+					<label htmlFor="Nbuf">Nbuf</label>
+					<input id="Nbuf" type="number" />
+					<label htmlFor="Nsig">Nsig</label>
+					<input id="Nsig" type="number" />
+					<label htmlFor="Ntot">Ntot</label>
+					<input id="Ntot" type="number" />
+					<label htmlFor="sample-rate">Sample Rate</label>
+					<select id="sample-rate">
+						<option value={400}>400 SPS</option>
+						<option value={1200}>1200 SPS</option>
+						<option value={2400}>2400 SPS</option>
+						<option value={4800}>4800 SPS</option>
+						<option value={7200}>7200 SPS</option>
+					</select>
+					<label htmlFor="window-function">Window Function</label>
+					<select id="window-function">
+						<option value="rectangular">Rectangular</option>
+						<option value="hann">Hann</option>
+						<option value="hamming">Hamming</option>
+						<option value="blackman">Blackman</option>
+						<option value="blackmanharris">Blackman-Harris</option>
+					</select>
+					<ToggleButton
+						value={rollingFft}
+						setValue={setRollingFft}
+						id="rolling-fft"
+					>
+						Rolling FFT - {rollingFft ? "On" : "Off"}
+					</ToggleButton>
 				</ControlSection>
 			</div>
 		</aside>

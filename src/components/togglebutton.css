@@ -1,0 +1,26 @@
+label.toggle-button {
+    border-radius: 8px;
+    padding: 0.6em 1.2em;
+    font-size: 0.875em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: transparent;
+    color: #c9d1d9; /* Soft, off-white text */
+    border: 1px solid rgb(39, 39, 42);
+    cursor: pointer;
+    transition: border-color 0.25s;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+label.toggle-button:hover {
+    border-color: #646cff;
+  }
+
+input.toggle-button {
+  visibility: hidden;
+}
+
+label.toggle-button.on {
+    border: 1px solid green; 
+}

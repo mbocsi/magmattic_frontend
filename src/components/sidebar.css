@@ -6,6 +6,7 @@
     background-color: #18181A;
     flex-grow: 0;
     min-width: 240px;
+    border-right: 1px solid rgb(39, 39, 42);
 }
 
 .sidebar-content {
@@ -74,12 +75,18 @@ h2.sidebar-title {
 label {
     padding-left: 8px;
     padding-right: 8px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 button {
     width: 100%;
 }
 
+input {
+    width: 100%;
+    box-sizing: border-box;
+}
 
 .input-connected {
     border: 1px solid #3a7d44; /* Green border */
@@ -88,4 +95,20 @@ button {
   
 .input-disconnected {
     border: 1px solid #8b3a3a; /* Red border */
+}
+
+.socket-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    column-gap: 4px;
+}
+
+select {
+    width: 100%;
+}
+  
+option {
+    background-color: #FFFFFF;
 }
