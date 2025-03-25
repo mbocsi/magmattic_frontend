@@ -7,7 +7,7 @@ import {
 import "./sidebar.css";
 import { NavLink } from "react-router";
 import ToggleButton from "./togglebutton";
-import { useState } from "react";
+import { useApp } from "../AppContext";
 
 const navItems = [
 	{ name: "Dashboard", href: "/", icon: Activity },
@@ -16,8 +16,13 @@ const navItems = [
 	{ name: "Calculations", href: "/calculations", icon: Sliders },
 ];
 export default function Sidebar() {
-	const connected = false;
-	const [rollingFft, setRollingFft] = useState<boolean>(false);
+	const {
+		isConnected,
+		rollingFft,
+		setRollingFft,
+		connectWebsocket,
+		disconnectWebsocket,
+	} = useApp();
 	return (
 		<aside className="sidebar">
 			<div className="sidebar-content">
@@ -39,7 +44,7 @@ export default function Sidebar() {
 							id="server-address"
 							style={{ maxWidth: "100%" }}
 							className={
-								connected
+								isConnected
 									? "input-connected"
 									: "input-disconnected"
 							}
@@ -47,8 +52,25 @@ export default function Sidebar() {
 						/>
 					</div>
 					<div className="socket-buttons">
-						<button className="btn-primary">Connect</button>
-						<button className="btn-secondary">Disconnect</button>
+						<button
+							className="btn-primary"
+							onClick={() => {
+								const input: HTMLInputElement =
+									document.getElementById(
+										"server-address"
+									) as HTMLInputElement;
+
+								connectWebsocket(input.value);
+							}}
+						>
+							Connect
+						</button>
+						<button
+							className="btn-secondary"
+							onClick={disconnectWebsocket}
+						>
+							Disconnect
+						</button>
 					</div>
 				</ControlSection>
 				<ControlSection title="Controls">

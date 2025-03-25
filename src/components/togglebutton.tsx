@@ -10,7 +10,7 @@ export default function ToggleButton({
 	children: React.ReactNode;
 	className?: string;
 	value: boolean;
-	setValue?: (x: boolean | ((prev: boolean) => boolean)) => void;
+	setValue?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
 	return (
 		<>
