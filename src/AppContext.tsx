@@ -12,6 +12,7 @@ import { Data } from "./types";
 type AppData = {
 	connectWebsocket: (x: string) => void;
 	disconnectWebsocket: () => void;
+	sendWebsocket: (data: object) => void;
 	isConnected: boolean;
 	Nsig: number;
 	setNsig: React.Dispatch<React.SetStateAction<number>>;
@@ -153,9 +154,15 @@ export function useProvideApp() {
 		ws.current?.close();
 	}
 
+	function sendWebsocket(data: object) {
+		console.log("Sending message:", data);
+		ws.current?.send(JSON.stringify(data));
+	}
+
 	return {
 		connectWebsocket,
 		disconnectWebsocket,
+		sendWebsocket,
 		isConnected,
 		Nsig,
 		setNsig,

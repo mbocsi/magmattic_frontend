@@ -15,6 +15,7 @@ const navItems = [
 	{ name: "Time Domain", href: "/time-domain", icon: Waveform },
 	{ name: "Calculations", href: "/calculations", icon: Sliders },
 ];
+
 export default function Sidebar() {
 	const {
 		isConnected,
@@ -22,6 +23,17 @@ export default function Sidebar() {
 		setRollingFft,
 		connectWebsocket,
 		disconnectWebsocket,
+		sendWebsocket,
+		Nsig,
+		setNsig,
+		Ntot,
+		setNtot,
+		Nbuf,
+		setNbuf,
+		sampleRate,
+		setSampleRate,
+		windowFunc,
+		setWindowFunc,
 	} = useApp();
 	return (
 		<aside className="sidebar">
@@ -75,13 +87,57 @@ export default function Sidebar() {
 				</ControlSection>
 				<ControlSection title="Controls">
 					<label htmlFor="Nbuf">Nbuf</label>
-					<input id="Nbuf" type="number" />
+					<input
+						id="Nbuf"
+						type="number"
+						value={Nbuf}
+						onChange={(e) => setNbuf(parseInt(e.target.value))}
+						onBlur={() =>
+							sendWebsocket({
+								topic: "adc/command",
+								payload: { Nbuf: Nbuf },
+							})
+						}
+					/>
 					<label htmlFor="Nsig">Nsig</label>
-					<input id="Nsig" type="number" />
+					<input
+						id="Nsig"
+						type="number"
+						value={Nsig}
+						onChange={(e) => setNsig(parseInt(e.target.value))}
+						onBlur={() =>
+							sendWebsocket({
+								topic: "calculation/command",
+								payload: { Nsig: Nsig },
+							})
+						}
+					/>
 					<label htmlFor="Ntot">Ntot</label>
-					<input id="Ntot" type="number" />
+					<input
+						id="Ntot"
+						type="number"
+						value={Ntot}
+						onChange={(e) => setNtot(parseInt(e.target.value))}
+						onBlur={() =>
+							sendWebsocket({
+								topic: "calculation/command",
+								payload: { Ntot: Ntot },
+							})
+						}
+					/>
 					<label htmlFor="sample-rate">Sample Rate</label>
-					<select id="sample-rate">
+					<select
+						id="sample-rate"
+						value={sampleRate}
+						onChange={(e) => {
+							const sample_rate = parseInt(e.target.value);
+							setSampleRate(sample_rate);
+							sendWebsocket({
+								topic: "adc/command",
+								payload: { sample_rate: sample_rate },
+							});
+						}}
+					>
 						<option value={400}>400 SPS</option>
 						<option value={1200}>1200 SPS</option>
 						<option value={2400}>2400 SPS</option>
@@ -89,7 +145,18 @@ export default function Sidebar() {
 						<option value={7200}>7200 SPS</option>
 					</select>
 					<label htmlFor="window-function">Window Function</label>
-					<select id="window-function">
+					<select
+						id="window-function"
+						value={windowFunc}
+						onChange={(e) => {
+							const window = e.target.value;
+							setWindowFunc(window);
+							sendWebsocket({
+								topic: "calculation/command",
+								payload: { window: window },
+							});
+						}}
+					>
 						<option value="rectangular">Rectangular</option>
 						<option value="hann">Hann</option>
 						<option value="hamming">Hamming</option>
