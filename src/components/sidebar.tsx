@@ -165,7 +165,13 @@ export default function Sidebar() {
 					</select>
 					<ToggleButton
 						value={rollingFft}
-						setValue={setRollingFft}
+						onChange={(e) => {
+							setRollingFft(e.target.checked);
+							sendWebsocket({
+								topic: "calculation/command",
+								payload: { rolling_fft: e.target.checked },
+							});
+						}}
 						id="rolling-fft"
 					>
 						Rolling FFT - {rollingFft ? "On" : "Off"}

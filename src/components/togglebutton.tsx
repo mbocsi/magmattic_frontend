@@ -4,26 +4,28 @@ export default function ToggleButton({
 	children,
 	className,
 	value,
-	setValue,
+	onChange,
 }: {
 	id: string;
 	children: React.ReactNode;
 	className?: string;
 	value: boolean;
-	setValue?: React.Dispatch<React.SetStateAction<boolean>>;
+	onChange: (e: any) => void;
 }) {
 	return (
 		<>
 			<label
 				htmlFor={id}
 				className={`toggle-button ${value ? "on" : "off"} ${className}`}
-				onClick={() =>
-					setValue ? setValue((prev: boolean) => !prev) : null
-				}
 			>
 				{children}
 			</label>
-			<input id={id} className="toggle-button" type="checkbox" />
+			<input
+				id={id}
+				className="toggle-button"
+				type="checkbox"
+				onChange={onChange}
+			/>
 		</>
 	);
 }

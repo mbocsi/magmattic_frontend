@@ -81,7 +81,12 @@ export function useProvideApp() {
 				JSON.stringify({
 					topic: "subscribe",
 					payload: {
-						topics: ["adc/status", "calculation/status"],
+						topics: [
+							"adc/status",
+							"calculation/status",
+							"fft/data",
+							"voltage/data",
+						],
 					},
 				})
 			);
