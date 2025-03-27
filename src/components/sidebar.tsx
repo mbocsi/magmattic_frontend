@@ -34,9 +34,11 @@ export default function Sidebar() {
 		setSampleRate,
 		windowFunc,
 		setWindowFunc,
+		createDump,
 	} = useApp();
+
 	return (
-		<aside className="sidebar">
+		<aside className={`sidebar ${isConnected ? "connected" : ""}`}>
 			<div className="sidebar-content">
 				<SidebarTitle title="Magmattic Client" />
 				<ControlSection title="Navigation">
@@ -176,6 +178,7 @@ export default function Sidebar() {
 					>
 						Rolling FFT - {rollingFft ? "On" : "Off"}
 					</ToggleButton>
+					<button onClick={createDump}>Open data dump</button>
 				</ControlSection>
 			</div>
 		</aside>

@@ -1,8 +1,8 @@
-import { memo, useEffect, useRef, useState } from "react";
-import { FFTPhaseChart } from "../components/charts";
+import { useEffect, useRef } from "react";
+import { FFTChart } from "../components/charts";
 import "./FFTPage.css";
 import { useApp } from "../AppContext";
-import { ECharts } from "echarts/core";
+import { ECharts, connect } from "echarts/core";
 import { DataCard, DataList } from "../components/datacard";
 
 const windows: { [key: string]: { cg: number; enbw: number } } = {
@@ -16,7 +16,8 @@ const windows: { [key: string]: { cg: number; enbw: number } } = {
 export default function FFTPage() {
 	console.log("Rerendered FFTPage");
 	const { fftData, windowFunc, minFreq, maxFreq } = useApp();
-	const chartRef = useRef<ECharts | null>(null);
+	const fftChartRef = useRef<ECharts | null>(null);
+	const phaseChartRef = useRef<ECharts | null>(null);
 
 	console.log(fftData);
 	const freq_resolution =
@@ -56,19 +57,39 @@ export default function FFTPage() {
 	const power_spectral_density = Math.pow(amplitude_spectral_density, 2);
 
 	useEffect(() => {
-		chartRef.current?.setOption({
-			series: [{ data: fftData }, { data: fftData }],
+		connect("fftPage");
+	}, []);
+
+	useEffect(() => {
+		fftChartRef.current?.setOption({
+			series: [{ data: fftData }],
 		});
-		console.log("Updated FFT data");
+		// FIXME: temporary
+		phaseChartRef.current?.setOption({
+			series: [{ data: fftData }],
+		});
 	}, [fftData]);
 	return (
 		<main>
-			<div className="chart-section">
-				<FFTPhaseChart
-					id="fft-chart"
+			<div style={{ gridColumn: "1 / 3", gridRow: "1" }}>
+				<FFTChart
+					id="mag-ff-chart"
+					title="Magnitude"
+					group="fftPage"
 					width="100%"
 					height="100%"
-					chartRef={chartRef}
+					chartRef={fftChartRef}
+				/>
+			</div>
+			<div style={{ gridColumn: "1/3", gridRow: "2" }}>
+				<FFTChart
+					id="phase-fft-chart"
+					title="Phase"
+					group="fftPage"
+					color="#66ff00"
+					width="100%"
+					height="100%"
+					chartRef={phaseChartRef}
 				/>
 			</div>
 			<DataList className="data-display">

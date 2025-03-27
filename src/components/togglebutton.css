@@ -18,7 +18,7 @@ label.toggle-button:hover {
   }
 
 input.toggle-button {
-  visibility: hidden;
+  display: none;
 }
 
 label.toggle-button.on {

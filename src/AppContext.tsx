@@ -32,6 +32,7 @@ type AppData = {
 	setMinFreq: React.Dispatch<React.SetStateAction<number>>;
 	maxFreq: number;
 	setMaxFreq: React.Dispatch<React.SetStateAction<number>>;
+	createDump: () => void;
 };
 
 const appContext: Context<AppData> = createContext<AppData>({} as AppData);
@@ -170,6 +171,31 @@ export function useProvideApp() {
 		ws.current?.send(JSON.stringify(data));
 	}
 
+	function createDump() {
+		const jsonString = JSON.stringify(
+			{
+				voltageData: voltageData,
+				fftData: fftData,
+				metadata: {
+					Nsig: Nsig,
+					Ntot: Ntot,
+					Nbuf: Nbuf,
+					rolling_fft: rollingFft,
+					window: windowFunc,
+					sample_rate: sampleRate,
+					minFreq: minFreq,
+					maxFreq: maxFreq,
+				},
+			},
+			null,
+			2
+		);
+		const newWindow = window.open();
+		if (!newWindow) return;
+		newWindow.document.write(`<pre>${jsonString}</pre>`);
+		newWindow.document.close();
+	}
+
 	return {
 		connectWebsocket,
 		disconnectWebsocket,
@@ -193,5 +219,6 @@ export function useProvideApp() {
 		setMinFreq,
 		maxFreq,
 		setMaxFreq,
+		createDump,
 	};
 }

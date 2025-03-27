@@ -253,21 +253,29 @@ export function VoltageChart({
 
 export function FFTChart({
 	chartRef,
+	title,
+	group,
+	color,
 	id,
 	width,
 	height,
 }: {
 	chartRef: React.RefObject<echarts.ECharts | null>;
+	title?: string;
+	group?: string;
+	color?: string;
 	id: string;
 	width: string;
 	height: string;
 }) {
+	const { setMinFreq, setMaxFreq } = useApp();
 	const options = {
 		title: {
-			text: "FFT",
+			text: title ? title : "FFT",
 		},
 		grid: {
-			bottom: 80,
+			left: "5%",
+			right: "5%",
 		},
 		toolbox: {
 			feature: {
@@ -315,13 +323,17 @@ export function FFTChart({
 			splitLine: {
 				show: true,
 			},
+			axisLine: { show: false },
 		},
 		series: [
 			{
 				name: "FFT",
-				areaStyle: {},
+				areaStyle: {
+					color: color ? color : "#646cff",
+				},
 				lineStyle: {
 					width: 1,
+					color: color ? color : "#646cff",
 				},
 				emphasis: {
 					focus: "series",
@@ -329,9 +341,6 @@ export function FFTChart({
 				data: [],
 				showSymbol: false,
 				type: "line",
-				markPoint: {
-					data: [{ type: "max", name: "Max", symbol: "pin" }],
-				},
 			},
 		],
 		animationThreshold: 2000,
@@ -342,8 +351,8 @@ export function FFTChart({
 	chartRef.current?.on("brushSelected", function (params: any) {
 		try {
 			const [minFreq, maxFreq] = params.batch[0].areas[0].coordRange;
-			// setMinFreq(minFreq);
-			// setMaxFreq(maxFreq);
+			setMinFreq(minFreq);
+			setMaxFreq(maxFreq);
 		} catch {
 			// This is some quality javascript right here
 		}
@@ -351,6 +360,7 @@ export function FFTChart({
 	return (
 		<Chart
 			chartRef={chartRef}
+			group={group}
 			id={id}
 			width={width}
 			height={height}
@@ -361,12 +371,14 @@ export function FFTChart({
 
 function Chart({
 	chartRef,
+	group,
 	id,
 	width,
 	height,
 	options,
 }: {
 	chartRef: React.RefObject<echarts.ECharts | null>;
+	group?: string;
 	id: string;
 	width: string;
 	height: string;
@@ -375,8 +387,11 @@ function Chart({
 	useEffect(() => {
 		var chartDom = document.getElementById(id);
 		var chart = echarts.init(chartDom, null, {
-			renderer: "canvas",
+			renderer: "svg",
 		});
+		if (group) {
+			chart.group = group;
+		}
 		chartRef.current = chart;
 
 		options && chart.setOption(options);

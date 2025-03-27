@@ -13,7 +13,7 @@ createRoot(document.getElementById("root")!).render(
 		<BrowserRouter>
 			<Routes>
 				<Route element={<AppLayout />}>
-					<Route index element={<Dashboard />} />
+					<Route index element={<FFTPage />} />
 					<Route path="/fft" element={<FFTPage />} />
 					<Route path="/time-domain" element={<TimeDomainPage />} />
 					<Route path="/calculations" element={<CalculationPage />} />
