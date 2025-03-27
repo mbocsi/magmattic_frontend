@@ -27,7 +27,8 @@ type AppData = {
 	sampleRate: number;
 	setSampleRate: React.Dispatch<React.SetStateAction<number>>;
 	voltageData: Data;
-	fftData: Data;
+	fftMagData: Data;
+	fftPhaseData: Data;
 	minFreq: number;
 	setMinFreq: React.Dispatch<React.SetStateAction<number>>;
 	maxFreq: number;
@@ -63,7 +64,8 @@ export function useProvideApp() {
 			value: [i, 0],
 		}))
 	);
-	const [fftData, setFftData] = useState<Data>([]);
+	const [fftMagData, setFftMagData] = useState<Data>([]);
+	const [fftPhaseData, setFftPhaseData] = useState<Data>([]);
 
 	useEffect(() => {
 		connectWebsocket("ws://magpi.local:44444");
@@ -91,8 +93,11 @@ export function useProvideApp() {
 						topics: [
 							"adc/status",
 							"calculation/status",
-							"fft/data",
+							"fft_mags/data",
+							"fft_phases/data",
 							"voltage/data",
+							"signal/data",
+							"bfield/data",
 						],
 					},
 				})
@@ -132,8 +137,18 @@ export function useProvideApp() {
 					});
 					break;
 
-				case "fft/data":
-					setFftData(
+				case "fft_mags/data":
+					setFftMagData(
+						data.payload.map((val: [number, number]) => ({
+							name: val[0],
+							value: val,
+						}))
+					);
+					// setWindowFunc(data.metadata.window);
+					break;
+
+				case "fft_phases/data":
+					setFftPhaseData(
 						data.payload.map((val: [number, number]) => ({
 							name: val[0],
 							value: val,
@@ -174,8 +189,9 @@ export function useProvideApp() {
 	function createDump() {
 		const jsonString = JSON.stringify(
 			{
-				voltageData: voltageData,
-				fftData: fftData,
+				voltage_data: voltageData,
+				fft_mag_data: fftMagData,
+				fft_phase_data: fftPhaseData,
 				metadata: {
 					Nsig: Nsig,
 					Ntot: Ntot,
@@ -214,7 +230,8 @@ export function useProvideApp() {
 		sampleRate,
 		setSampleRate,
 		voltageData,
-		fftData,
+		fftMagData,
+		fftPhaseData,
 		minFreq,
 		setMinFreq,
 		maxFreq,

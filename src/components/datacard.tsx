@@ -32,7 +32,7 @@ export function DataList({
 	className,
 }: {
 	children: React.ReactNode;
-	className: string;
+	className?: string;
 }) {
 	return <ul className={className}>{children}</ul>;
 }

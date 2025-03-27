@@ -15,17 +15,17 @@ const windows: { [key: string]: { cg: number; enbw: number } } = {
 
 export default function FFTPage() {
 	console.log("Rerendered FFTPage");
-	const { fftData, windowFunc, minFreq, maxFreq } = useApp();
+	const { fftMagData, fftPhaseData, windowFunc, minFreq, maxFreq } = useApp();
 	const fftChartRef = useRef<ECharts | null>(null);
 	const phaseChartRef = useRef<ECharts | null>(null);
 
-	console.log(fftData);
 	const freq_resolution =
-		(fftData[fftData.length - 1]?.value[0] - fftData[0]?.value[0]) /
-		(fftData.length - 1);
+		(fftMagData[fftMagData.length - 1]?.value[0] -
+			fftMagData[0]?.value[0]) /
+		(fftMagData.length - 1);
 	console.log(freq_resolution);
 
-	const maxMagnitude = fftData
+	const maxMagnitude = fftMagData
 		.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
 		.reduce(
 			(curMax, curVal) =>
@@ -33,7 +33,7 @@ export default function FFTPage() {
 			[-Infinity, -Infinity]
 		);
 
-	const raw_power = fftData
+	const raw_power = fftMagData
 		.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
 		.reduce(
 			(curSum, curVal) =>
@@ -45,7 +45,7 @@ export default function FFTPage() {
 	const estimated_amplitude = Math.sqrt(estimated_power);
 
 	const amplitude_spectral_density = Math.sqrt(
-		fftData
+		fftMagData
 			.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)
 			.reduce(
 				(curSum, curVal) => curSum + Math.pow(curVal.value[1], 2),
@@ -62,13 +62,15 @@ export default function FFTPage() {
 
 	useEffect(() => {
 		fftChartRef.current?.setOption({
-			series: [{ data: fftData }],
+			series: [{ data: fftMagData }],
 		});
-		// FIXME: temporary
+	}, [fftMagData]);
+
+	useEffect(() => {
 		phaseChartRef.current?.setOption({
-			series: [{ data: fftData }],
+			series: [{ data: fftPhaseData }],
 		});
-	}, [fftData]);
+	}, [fftPhaseData]);
 	return (
 		<main>
 			<div style={{ gridColumn: "1 / 3", gridRow: "1" }}>
