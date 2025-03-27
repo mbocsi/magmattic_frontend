@@ -28,6 +28,10 @@ type AppData = {
 	setSampleRate: React.Dispatch<React.SetStateAction<number>>;
 	voltageData: Data;
 	fftData: Data;
+	minFreq: number;
+	setMinFreq: React.Dispatch<React.SetStateAction<number>>;
+	maxFreq: number;
+	setMaxFreq: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const appContext: Context<AppData> = createContext<AppData>({} as AppData);
@@ -48,6 +52,8 @@ export function useProvideApp() {
 	const [windowFunc, setWindowFunc] = useState<string>("rectangular");
 	const [rollingFft, setRollingFft] = useState<boolean>(false);
 	const [sampleRate, setSampleRate] = useState<number>(1200);
+	const [minFreq, setMinFreq] = useState<number>(0);
+	const [maxFreq, setMaxFreq] = useState<number>(600);
 
 	// FIXME: Make this variable length based on Nsig
 	const [voltageData, setVoltageData] = useState<Data>(
@@ -132,7 +138,7 @@ export function useProvideApp() {
 							value: val,
 						}))
 					);
-					setWindowFunc(data.metadata.window);
+					// setWindowFunc(data.metadata.window);
 					break;
 
 				case "adc/status":
@@ -183,5 +189,9 @@ export function useProvideApp() {
 		setSampleRate,
 		voltageData,
 		fftData,
+		minFreq,
+		setMinFreq,
+		maxFreq,
+		setMaxFreq,
 	};
 }

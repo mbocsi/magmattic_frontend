@@ -14,6 +14,7 @@ import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 import { ECBasicOption } from "echarts/types/src/util/types.js";
 import { Data } from "../types";
+import { useApp } from "../AppContext";
 
 echarts.use([
 	TitleComponent,
@@ -39,6 +40,7 @@ export function FFTPhaseChart({
 	width: string;
 	height: string;
 }) {
+	const { setMinFreq, setMaxFreq } = useApp();
 	const options = {
 		title: [
 			{
@@ -53,9 +55,13 @@ export function FFTPhaseChart({
 		],
 		grid: [
 			{
+				left: "5%",
+				right: "5%",
 				bottom: "55%",
 			},
 			{
+				left: "5%",
+				right: "5%",
 				top: "55%",
 			},
 		],
@@ -119,12 +125,14 @@ export function FFTPhaseChart({
 				splitLine: {
 					show: false,
 				},
+				axisLine: { show: false },
 			},
 			{
 				type: "value",
 				splitLine: {
 					show: false,
 				},
+				axisLine: { show: false },
 				gridIndex: 1,
 			},
 		],
@@ -162,6 +170,15 @@ export function FFTPhaseChart({
 		animationDurationUpdate: 100,
 		animationEasingUpdate: (t: number) => t,
 	};
+	chartRef.current?.on("brushSelected", function (params: any) {
+		try {
+			const [minFreq, maxFreq] = params.batch[0].areas[0].coordRange;
+			setMinFreq(minFreq);
+			setMaxFreq(maxFreq);
+		} catch {
+			// This is some quality javascript right here
+		}
+	});
 
 	return (
 		<Chart
