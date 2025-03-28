@@ -387,7 +387,7 @@ function Chart({
 	useEffect(() => {
 		var chartDom = document.getElementById(id);
 		var chart = echarts.init(chartDom, null, {
-			renderer: "svg",
+			renderer: "canvas",
 		});
 		if (group) {
 			chart.group = group;

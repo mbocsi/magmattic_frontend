@@ -34,6 +34,8 @@ type AppData = {
 	maxFreq: number;
 	setMaxFreq: React.Dispatch<React.SetStateAction<number>>;
 	createDump: () => void;
+	signal: { amplitude: number; theta: number; omega: number };
+	bfield: [number, number];
 };
 
 const appContext: Context<AppData> = createContext<AppData>({} as AppData);
@@ -56,6 +58,16 @@ export function useProvideApp() {
 	const [sampleRate, setSampleRate] = useState<number>(1200);
 	const [minFreq, setMinFreq] = useState<number>(0);
 	const [maxFreq, setMaxFreq] = useState<number>(600);
+	const [signal, setSignal] = useState<{
+		amplitude: number;
+		theta: number;
+		omega: number;
+	}>({
+		amplitude: 0,
+		theta: 0,
+		omega: 0,
+	});
+	const [bfield, setBfield] = useState<[number, number]>([0, 0]);
 
 	// FIXME: Make this variable length based on Nsig
 	const [voltageData, setVoltageData] = useState<Data>(
@@ -144,7 +156,6 @@ export function useProvideApp() {
 							value: val,
 						}))
 					);
-					// setWindowFunc(data.metadata.window);
 					break;
 
 				case "fft_phases/data":
@@ -154,7 +165,14 @@ export function useProvideApp() {
 							value: val,
 						}))
 					);
-					// setWindowFunc(data.metadata.window);
+					break;
+
+				case "signal/data":
+					setSignal(data.payload);
+					break;
+
+				case "bfield/data":
+					setBfield(data.payload);
 					break;
 
 				case "adc/status":
@@ -237,5 +255,7 @@ export function useProvideApp() {
 		maxFreq,
 		setMaxFreq,
 		createDump,
+		signal,
+		bfield,
 	};
 }
