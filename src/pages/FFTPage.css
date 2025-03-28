@@ -1,0 +1,12 @@
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+
+.data-display {
+    background-color: #18181A;
+    box-shadow: 0px 0px 2px 1px #646cff;
+    padding: 8px;
+}
