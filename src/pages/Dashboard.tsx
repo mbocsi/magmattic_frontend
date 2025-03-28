@@ -1,4 +1,3 @@
-import { FFTChart, VoltageChart } from "../components/charts";
 import "./Dashboard.css";
 export default function Dashboard() {
 	return (

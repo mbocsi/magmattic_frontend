@@ -14,7 +14,6 @@ const windows: { [key: string]: { cg: number; enbw: number } } = {
 };
 
 export default function FFTPage() {
-	console.log("Rerendered FFTPage");
 	const { fftMagData, fftPhaseData, windowFunc, minFreq, maxFreq } = useApp();
 	const fftChartRef = useRef<ECharts | null>(null);
 	const phaseChartRef = useRef<ECharts | null>(null);
@@ -23,7 +22,6 @@ export default function FFTPage() {
 		(fftMagData[fftMagData.length - 1]?.value[0] -
 			fftMagData[0]?.value[0]) /
 		(fftMagData.length - 1);
-	console.log(freq_resolution);
 
 	const maxMagnitude = fftMagData
 		.filter((d) => d.value[0] >= minFreq && d.value[0] <= maxFreq)

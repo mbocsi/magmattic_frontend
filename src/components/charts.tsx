@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import * as echarts from "echarts/core";
 import {
 	TitleComponent,

@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./index.css";
 import AppLayout from "./AppLayout.tsx";
-import Dashboard from "./pages/Dashboard.tsx";
+// import Dashboard from "./pages/Dashboard.tsx";
 import FFTPage from "./pages/FFTPage.tsx";
 import TimeDomainPage from "./pages/TimeDomainPage.tsx";
 import CalculationPage from "./pages/CalculationPage.tsx";
