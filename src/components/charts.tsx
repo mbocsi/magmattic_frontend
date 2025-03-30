@@ -259,6 +259,8 @@ export function FFTChart({
 	id,
 	width,
 	height,
+	minY,
+	maxY,
 }: {
 	chartRef: React.RefObject<echarts.ECharts | null>;
 	title?: string;
@@ -267,6 +269,8 @@ export function FFTChart({
 	id: string;
 	width: string;
 	height: string;
+	minY?: number;
+	maxY?: number;
 }) {
 	const { setMinFreq, setMaxFreq } = useApp();
 	const options = {
@@ -324,6 +328,8 @@ export function FFTChart({
 				show: true,
 			},
 			axisLine: { show: false },
+			min: minY ? minY : null,
+			max: maxY ? maxY : null,
 		},
 		series: [
 			{

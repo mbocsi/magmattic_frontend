@@ -1,39 +1,13 @@
 import { useApp } from "../AppContext";
-import { DataCard, DataList } from "../components/datacard";
+import { DetectedSignals } from "../components/detectedsignals";
 
 export default function CalculationPage() {
-	const { signal, bfield } = useApp();
+	const { signals } = useApp();
 	return (
 		<main>
-			<DataList>
-				<DataCard
-					label="Signal Magnitude"
-					value={signal.amplitude.toFixed(9)}
-					units="V"
-				/>
-				<DataCard
-					label="Signal Phase"
-					value={signal.theta.toFixed(9)}
-					units="Rad"
-				/>
-				<DataCard
-					label="Signal Angular Velocity"
-					value={signal.omega.toFixed(9)}
-					units="Rad/s"
-				/>
-				<DataCard
-					label="B-Field (Vector)"
-					value={`[${bfield[0].toFixed(9)}, ${bfield[1].toFixed(9)}]`}
-					units="T"
-				/>
-				<DataCard
-					label="B-Field Magnitude"
-					value={Math.sqrt(
-						Math.pow(bfield[0], 2) + Math.pow(bfield[1], 2)
-					).toFixed(9)}
-					units="T"
-				/>
-			</DataList>
+			<div style={{ padding: "8px" }}>
+				<DetectedSignals signals={signals} />
+			</div>
 		</main>
 	);
 }

@@ -1,9 +1,10 @@
-import { act, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { FFTChart } from "../components/charts";
 import "./FFTPage.css";
 import { useApp } from "../AppContext";
 import { ECharts, connect } from "echarts/core";
 import { DataCard, DataList } from "../components/datacard";
+import { DetectedSignals } from "../components/detectedsignals";
 
 const windows: { [key: string]: { cg: number; enbw: number } } = {
 	rectangular: { cg: 1, enbw: 1 },
@@ -100,6 +101,8 @@ export default function FFTPage() {
 					width="100%"
 					height="100%"
 					chartRef={phaseChartRef}
+					minY={-180}
+					maxY={180}
 				/>
 			</div>
 			<DataList className="data-display">
@@ -191,111 +194,5 @@ export default function FFTPage() {
 				<DetectedSignals signals={signals} />
 			</div>
 		</main>
-	);
-}
-
-function DetectedSignals({
-	signals,
-}: {
-	signals: { freq: number; mag: number; phase: number }[];
-}) {
-	const [activeFreq, setActiveFreq] = useState<number>(0);
-	function findClosest(
-		arr: { freq: number; mag: number; phase: number }[],
-		target: number
-	) {
-		if (!arr || arr.length === 0) {
-			return null; // Handle empty or invalid array
-		}
-
-		let closest = arr[0];
-		let minDiff = Math.abs(arr[0].freq - target);
-
-		for (let i = 1; i < arr.length; i++) {
-			const currentDiff = Math.abs(arr[i].freq - target);
-			if (currentDiff < minDiff) {
-				minDiff = currentDiff;
-				closest = arr[i];
-			} else if (currentDiff === minDiff && arr[i] > closest) {
-				closest = arr[i]; // If equal distances, pick the larger number
-			}
-		}
-		return closest;
-	}
-	const activeSignal = findClosest(signals, activeFreq);
-	useEffect(() => {
-		if (activeSignal) {
-			setActiveFreq(activeSignal.freq);
-		}
-	}, [signals]);
-
-	return (
-		<>
-			<div className="detected-signals">
-				{signals.map((sig, i) => (
-					<SignalCard
-						key={sig.freq}
-						freq={sig.freq}
-						mag={sig.mag}
-						active={sig.freq == activeFreq}
-						onClick={() => setActiveFreq(sig.freq)}
-					/>
-				))}
-			</div>
-			<DataList>
-				{activeSignal ? (
-					<>
-						<DataCard
-							label="Frequency"
-							value={activeSignal.freq.toFixed(3)}
-							units="Hz"
-						/>
-						<DataCard
-							label="Amplitude"
-							value={activeSignal.mag.toFixed(9)}
-							units="V"
-						/>
-						<DataCard
-							label="Phase"
-							value={activeSignal.phase.toFixed(3)}
-							units="Rad"
-						/>{" "}
-					</>
-				) : (
-					""
-				)}
-			</DataList>
-		</>
-	);
-}
-
-function SignalCard({
-	freq,
-	mag,
-	active,
-	onClick,
-}: {
-	freq: number;
-	mag: number;
-	active: boolean;
-	key?: any;
-	onClick?: () => void;
-}) {
-	const [updated, setUpdated] = useState<boolean>(false);
-	useEffect(() => {
-		setUpdated(true);
-		const timer = setTimeout(() => setUpdated(false), 250);
-		return () => clearTimeout(timer);
-	}, []);
-	return (
-		<button
-			className={`signal-card ${active ? "active" : ""} ${
-				updated ? "new" : ""
-			}`}
-			onClick={onClick}
-		>
-			<p>{freq.toFixed(2)}Hz</p>
-			<p>{mag.toFixed(3)}V</p>
-		</button>
 	);
 }
