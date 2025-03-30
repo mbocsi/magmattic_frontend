@@ -7,6 +7,7 @@ import {
 	useState,
 } from "react";
 import { Data } from "./types";
+import { setSectorTextRotation } from "echarts/types/src/label/sectorLabel.js";
 
 // TODO: Figure out what this type and appContext is supposed to have
 type AppData = {
@@ -36,6 +37,9 @@ type AppData = {
 	createDump: () => void;
 	signal: { amplitude: number; theta: number; omega: number };
 	bfield: [number, number];
+	signals: { freq: number; mag: number; phase: number }[];
+	minSnr: number;
+	setMinSnr: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const appContext: Context<AppData> = createContext<AppData>({} as AppData);
@@ -68,6 +72,10 @@ export function useProvideApp() {
 		omega: 0,
 	});
 	const [bfield, setBfield] = useState<[number, number]>([0, 0]);
+	const [signals, setSignals] = useState<
+		{ freq: number; mag: number; phase: number }[]
+	>([]);
+	const [minSnr, setMinSnr] = useState<number>(3);
 
 	// FIXME: Make this variable length based on Nsig
 	const [voltageData, setVoltageData] = useState<Data>(
@@ -110,6 +118,7 @@ export function useProvideApp() {
 							"voltage/data",
 							"signal/data",
 							"bfield/data",
+							"signals/data",
 						],
 					},
 				})
@@ -175,6 +184,10 @@ export function useProvideApp() {
 					setBfield(data.payload);
 					break;
 
+				case "signals/data":
+					setSignals(data.payload);
+					break;
+
 				case "adc/status":
 					console.log("Received adc status: ", data);
 					setNbuf(data.payload.Nsig);
@@ -187,6 +200,7 @@ export function useProvideApp() {
 					setNtot(data.payload.Ntot);
 					setWindowFunc(data.payload.window);
 					setRollingFft(data.payload.rolling_fft);
+					setMinSnr(data.payload.min_snr);
 					break;
 
 				default:
@@ -257,5 +271,8 @@ export function useProvideApp() {
 		createDump,
 		signal,
 		bfield,
+		signals,
+		minSnr,
+		setMinSnr,
 	};
 }

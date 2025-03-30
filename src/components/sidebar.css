@@ -118,3 +118,7 @@ select {
 option {
     background-color: #FFFFFF;
 }
+
+.controls {
+    overflow-y: auto
+}
