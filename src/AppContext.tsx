@@ -34,8 +34,15 @@ type AppData = {
 	maxFreq: number;
 	setMaxFreq: React.Dispatch<React.SetStateAction<number>>;
 	createDump: () => void;
-	signal: { amplitude: number; theta: number; omega: number };
-	bfield: [number, number];
+	signals: {
+		freq: number;
+		mag: number;
+		phase: number;
+		ampl: number;
+		bfield: [number, number];
+	}[];
+	minSnr: number;
+	setMinSnr: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const appContext: Context<AppData> = createContext<AppData>({} as AppData);
@@ -58,16 +65,16 @@ export function useProvideApp() {
 	const [sampleRate, setSampleRate] = useState<number>(1200);
 	const [minFreq, setMinFreq] = useState<number>(0);
 	const [maxFreq, setMaxFreq] = useState<number>(600);
-	const [signal, setSignal] = useState<{
-		amplitude: number;
-		theta: number;
-		omega: number;
-	}>({
-		amplitude: 0,
-		theta: 0,
-		omega: 0,
-	});
-	const [bfield, setBfield] = useState<[number, number]>([0, 0]);
+	const [signals, setSignals] = useState<
+		{
+			freq: number;
+			mag: number;
+			phase: number;
+			ampl: number;
+			bfield: [number, number];
+		}[]
+	>([]);
+	const [minSnr, setMinSnr] = useState<number>(3);
 
 	// FIXME: Make this variable length based on Nsig
 	const [voltageData, setVoltageData] = useState<Data>(
@@ -110,6 +117,7 @@ export function useProvideApp() {
 							"voltage/data",
 							"signal/data",
 							"bfield/data",
+							"signals/data",
 						],
 					},
 				})
@@ -167,12 +175,8 @@ export function useProvideApp() {
 					);
 					break;
 
-				case "signal/data":
-					setSignal(data.payload);
-					break;
-
-				case "bfield/data":
-					setBfield(data.payload);
+				case "signals/data":
+					setSignals(data.payload);
 					break;
 
 				case "adc/status":
@@ -187,6 +191,7 @@ export function useProvideApp() {
 					setNtot(data.payload.Ntot);
 					setWindowFunc(data.payload.window);
 					setRollingFft(data.payload.rolling_fft);
+					setMinSnr(data.payload.min_snr);
 					break;
 
 				default:
@@ -255,7 +260,8 @@ export function useProvideApp() {
 		maxFreq,
 		setMaxFreq,
 		createDump,
-		signal,
-		bfield,
+		signals,
+		minSnr,
+		setMinSnr,
 	};
 }

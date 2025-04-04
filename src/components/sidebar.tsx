@@ -87,7 +87,7 @@ export default function Sidebar() {
 						</button>
 					</div>
 				</ControlSection>
-				<ControlSection title="Controls">
+				<ControlSection title="Controls" className="controls">
 					<label htmlFor="Nbuf">Nbuf</label>
 					<input
 						id="Nbuf"
@@ -196,12 +196,14 @@ function SidebarTitle({ title }: { title: string }) {
 function ControlSection({
 	title,
 	children,
+	className,
 }: {
 	title: string;
 	children: React.ReactNode;
+	className?: string;
 }) {
 	return (
-		<div className="control-section">
+		<div className={`control-section ${className}`}>
 			<div className="control-title">{title}</div>
 			<div className="control-content">{children}</div>
 		</div>

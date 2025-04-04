@@ -4,6 +4,7 @@ import "./FFTPage.css";
 import { useApp } from "../AppContext";
 import { ECharts, connect } from "echarts/core";
 import { DataCard, DataList } from "../components/datacard";
+import { DetectedSignals } from "../components/detectedsignals";
 
 const windows: { [key: string]: { cg: number; enbw: number } } = {
 	rectangular: { cg: 1, enbw: 1 },
@@ -14,7 +15,17 @@ const windows: { [key: string]: { cg: number; enbw: number } } = {
 };
 
 export default function FFTPage() {
-	const { fftMagData, fftPhaseData, windowFunc, minFreq, maxFreq } = useApp();
+	const {
+		fftMagData,
+		fftPhaseData,
+		windowFunc,
+		minFreq,
+		maxFreq,
+		signals,
+		minSnr,
+		setMinSnr,
+		sendWebsocket,
+	} = useApp();
 	const fftChartRef = useRef<ECharts | null>(null);
 	const phaseChartRef = useRef<ECharts | null>(null);
 
@@ -90,9 +101,12 @@ export default function FFTPage() {
 					width="100%"
 					height="100%"
 					chartRef={phaseChartRef}
+					minY={-180}
+					maxY={180}
 				/>
 			</div>
 			<DataList className="data-display">
+				<h3>Windowed Stats</h3>
 				<DataCard
 					label="Window Min Frequency"
 					value={minFreq.toFixed(2)}
@@ -161,9 +175,24 @@ export default function FFTPage() {
 					units="V"
 				/>
 			</DataList>
-			<DataList className="data-display">
-				<DataCard label="Max Phase" value="0.0" units="Rad" />
-			</DataList>
+			<div className="data-display">
+				<h3>Detected Signals</h3>
+				<div className="snr-select">
+					<p>Minimum SNR:</p>
+					<input
+						type="number"
+						value={minSnr}
+						onChange={(e) => setMinSnr(parseInt(e.target.value))}
+						onBlur={() => {
+							sendWebsocket({
+								topic: "calculation/command",
+								payload: { min_snr: minSnr },
+							});
+						}}
+					/>
+				</div>
+				<DetectedSignals signals={signals} />
+			</div>
 		</main>
 	);
 }
