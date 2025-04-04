@@ -1,5 +1,5 @@
 import { DataCard, DataList } from "./datacard";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import "./detectedsignals.css";
 export function DetectedSignals({
 	signals,
