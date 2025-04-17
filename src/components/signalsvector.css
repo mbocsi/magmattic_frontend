@@ -1,5 +1,5 @@
-main {
+#vector-signals {
     display: flex;
     flex-direction: column;
-    padding: 8px;
+    align-items: center;
 }

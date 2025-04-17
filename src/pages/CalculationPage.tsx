@@ -1,13 +1,12 @@
 import { useApp } from "../AppContext";
-import { DetectedSignals } from "../components/detectedsignals";
+import { VectorSignals } from "../components/signalsvector";
+import "./CalculationPage.css";
 
 export default function CalculationPage() {
-	const { signals } = useApp();
+	const { signals, signal } = useApp();
 	return (
 		<main>
-			<div style={{ padding: "8px" }}>
-				<DetectedSignals signals={signals} />
-			</div>
+			<VectorSignals signals={signals} />
 		</main>
 	);
 }

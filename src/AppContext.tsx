@@ -41,6 +41,13 @@ type AppData = {
 		ampl: number;
 		bfield: [number, number];
 	}[];
+	signal: {
+		freq: number;
+		mag: number;
+		phase: number;
+		ampl: number;
+		bfield: [number, number];
+	};
 	minSnr: number;
 	setMinSnr: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -74,6 +81,19 @@ export function useProvideApp() {
 			bfield: [number, number];
 		}[]
 	>([]);
+	const [signal, setSignal] = useState<{
+		freq: number;
+		mag: number;
+		phase: number;
+		ampl: number;
+		bfield: [number, number];
+	}>({
+		freq: -9999,
+		mag: -9999,
+		phase: -9999,
+		ampl: -9999,
+		bfield: [-9999, -9999],
+	});
 	const [minSnr, setMinSnr] = useState<number>(3);
 
 	// FIXME: Make this variable length based on Nsig
@@ -118,6 +138,7 @@ export function useProvideApp() {
 							"signal/data",
 							"bfield/data",
 							"signals/data",
+							"signal/data",
 						],
 					},
 				})
@@ -179,6 +200,10 @@ export function useProvideApp() {
 					setSignals(data.payload);
 					break;
 
+				case "signal/data":
+					setSignal(data.payload);
+					break;
+
 				case "adc/status":
 					console.log("Received adc status: ", data);
 					setNbuf(data.payload.Nsig);
@@ -235,6 +260,7 @@ export function useProvideApp() {
 		newWindow.document.close();
 	}
 
+	// This is peak react code (pov: intern discovers contexts)
 	return {
 		connectWebsocket,
 		disconnectWebsocket,
@@ -261,6 +287,7 @@ export function useProvideApp() {
 		setMaxFreq,
 		createDump,
 		signals,
+		signal,
 		minSnr,
 		setMinSnr,
 	};
