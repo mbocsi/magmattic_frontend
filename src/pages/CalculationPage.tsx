@@ -3,9 +3,9 @@ import { VectorSignals } from "../components/signalsvector";
 import "./CalculationPage.css";
 
 export default function CalculationPage() {
-	const { signals, signal } = useApp();
+	const { signals } = useApp();
 	return (
-		<main>
+		<main className="calculation">
 			<VectorSignals signals={signals} />
 		</main>
 	);

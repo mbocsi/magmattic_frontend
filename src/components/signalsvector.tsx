@@ -158,7 +158,7 @@ function VectorArrow({ x, y }: { x: number; y: number }) {
 			<line
 				x1={0}
 				y1={0}
-				x2={Math.ceil(x * 20000)}
+				x2={Math.ceil(-x * 20000)}
 				y2={Math.ceil(-y * 20000)}
 				stroke="#646cff"
 				strokeWidth="2"
