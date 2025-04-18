@@ -101,8 +101,8 @@ export default function FFTPage() {
 					width="100%"
 					height="100%"
 					chartRef={phaseChartRef}
-					minY={-180}
-					maxY={180}
+					minY={0}
+					maxY={360}
 				/>
 			</div>
 			<DataList className="data-display">
