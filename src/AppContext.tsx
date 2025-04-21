@@ -50,6 +50,8 @@ type AppData = {
 	};
 	minSnr: number;
 	setMinSnr: React.Dispatch<React.SetStateAction<number>>;
+	motorVel: number;
+	setMotorVel: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const appContext: Context<AppData> = createContext<AppData>({} as AppData);
@@ -105,6 +107,7 @@ export function useProvideApp() {
 	);
 	const [fftMagData, setFftMagData] = useState<Data>([]);
 	const [fftPhaseData, setFftPhaseData] = useState<Data>([]);
+	const [motorVel, setMotorVel] = useState<number>(0);
 
 	useEffect(() => {
 		connectWebsocket("ws://magpi.local:44444");
@@ -138,7 +141,7 @@ export function useProvideApp() {
 							"signal/data",
 							"bfield/data",
 							"signals/data",
-							"signal/data",
+							"motor/status",
 						],
 					},
 				})
@@ -219,6 +222,10 @@ export function useProvideApp() {
 					setMinSnr(data.payload.min_snr);
 					break;
 
+				case "motor/status":
+					setMotorVel(data.payload.freq);
+					break;
+
 				default:
 					console.log(`Unknown topic detected: ${data}`);
 			}
@@ -290,5 +297,7 @@ export function useProvideApp() {
 		signal,
 		minSnr,
 		setMinSnr,
+		motorVel,
+		setMotorVel,
 	};
 }

@@ -35,6 +35,8 @@ export default function Sidebar() {
 		windowFunc,
 		setWindowFunc,
 		createDump,
+		motorVel,
+		setMotorVel,
 	} = useApp();
 
 	return (
@@ -124,6 +126,19 @@ export default function Sidebar() {
 							sendWebsocket({
 								topic: "calculation/command",
 								payload: { Ntot: Ntot },
+							})
+						}
+					/>
+					<label htmlFor="motor-speed">Motor Speed (Hz)</label>
+					<input
+						id="motor-speed"
+						type="number"
+						value={motorVel}
+						onChange={(e) => setMotorVel(parseInt(e.target.value))}
+						onBlur={() =>
+							sendWebsocket({
+								topic: "motor/command",
+								payload: { freq: motorVel },
 							})
 						}
 					/>

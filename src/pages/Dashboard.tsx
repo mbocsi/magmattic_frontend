@@ -5,7 +5,6 @@ export default function Dashboard() {
 	const { signal } = useApp();
 	return (
 		<main>
-			{/* <h1>Main dashboard WIP - Go to FFT Data</h1> */}
 			<DataList>
 				{signal ? (
 					<>
